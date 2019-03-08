@@ -1,18 +1,40 @@
 package game
 
-// Game represents an instance of the card game
-type Game interface {
-	String() string
+//Player represents the data of a single player.
+type Player struct {
+	MyCards []int8
 }
 
-type _Game struct{}
+// Game represents an instance of the game
+type Game struct {
+	//the gamestate of player 1
+	Players []Player
+}
 
 // New returns a new Game instance
 func New() Game {
-	return &_Game{}
+	return Game{
+		Players: []Player{
+			NewPlayer(),
+			NewPlayer(),
+		},
+	}
 }
 
-func (g *_Game) String() string {
+//NewPlayer returns a new Player instance
+func NewPlayer() Player {
+	return Player{
+		MyCards: []int8{
+			0,
+			0,
+			0,
+			0,
+			0,
+		},
+	}
+}
+
+func (g *Game) String() string {
 	return `
           | Dealt | Remaining | Total | Modulus |
   Player1 | 2 3 4 |       1 5 |     9 |       4 |
