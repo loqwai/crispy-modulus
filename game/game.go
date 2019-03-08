@@ -11,22 +11,32 @@ type Player struct {
 }
 
 // Game represents an instance of the game
-type Game struct {
-	//the gamestate of player 1
+type Game interface {
+	GetState() State
+}
+
+// State describe what state the game is currently in. It is serializable
+type State struct {
 	Players []Player
 }
 
 // New returns a new Game instance
 func New() Game {
-	return Game{
-		Players: []Player{
-			NewPlayer(),
-			NewPlayer(),
+	return &_Game{
+		state: &State{
+			Players: []Player{
+				NewPlayer(),
+				NewPlayer(),
+			},
 		},
 	}
 }
 
-//NewPlayer returns a new Player instance
+type _Game struct {
+	state *State
+}
+
+// NewPlayer returns a new Player instance
 func NewPlayer() Player {
 	cardCount := 10
 	initialHandCount := cardCount / 2
@@ -43,7 +53,11 @@ func NewPlayer() Player {
 	return p
 }
 
-func (g *Game) String() string {
+func (g *_Game) GetState() State {
+	return *g.state
+}
+
+func (g *_Game) String() string {
 	return `
           | Dealt | Remaining | Total | Modulus |
   Player1 | 2 3 4 |       1 5 |     9 |       4 |

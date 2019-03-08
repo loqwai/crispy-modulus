@@ -25,7 +25,7 @@ var _ = Describe("Game", func() {
 
 	It("Should instantiate 2 players by default", func() {
 		g := game.New()
-		players := g.Players
+		players := g.GetState().Players
 		Expect(len(players)).To(Equal(2))
 	})
 
@@ -34,8 +34,9 @@ var _ = Describe("Game", func() {
 			p game.Player
 		)
 		BeforeEach(func() {
-			p = g.Players[0]
+			p = g.GetState().Players[0]
 		})
+
 		It("Should instantiate a player with 5 cards by default", func() {
 			Expect((len(p.MyCards))).To(Equal(5))
 		})
@@ -48,12 +49,11 @@ var _ = Describe("Game", func() {
 		})
 
 		It("Should not populate the hand with the same card twice", func() {
-
 			for i := 0; i < 1000; i++ {
 				p2 := game.NewPlayer()
 				for j := 0; j < 5; j++ {
 					for k := 0; k < 5; k++ {
-						if i == j {
+						if j == k {
 							continue
 						}
 						Expect(p2.MyCards[j]).NotTo(Equal(p2.MyCards[k]))
