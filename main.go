@@ -1,9 +1,9 @@
 package main
 
 import (
-	"fmt"
+	"github.com/loqwai/crispy-modulus/cmd"
 )
 
 func main() {
-	fmt.Println("hello world")
+	cmd.Execute()
 }
