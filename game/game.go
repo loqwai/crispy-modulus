@@ -13,5 +13,9 @@ func New() Game {
 }
 
 func (g *_Game) String() string {
-	return "Game state!"
+	return `
+          | Dealt | Remaining | Total | Modulus |
+  Player1 | 2 3 4 |       1 5 |     9 |       4 |
+  Player2 | 1 4 5 |       2 3 |    10 |       0 |
+	`
 }
