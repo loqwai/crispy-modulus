@@ -30,14 +30,14 @@ func New() Game {
 func NewPlayer() Player {
 	cardCount := 10
 	initialHandCount := cardCount / 2
-
+	deck := rand.Perm(cardCount)
 	p := Player{
-		MyCards:    make([]int, initialHandCount),
+		MyCards:    make([]int, 5),
 		TheirCards: make([]int, 0),
 	}
 
 	for i := 0; i < initialHandCount; i++ {
-		p.MyCards[i] = rand.Intn(cardCount) + 1
+		p.MyCards[i] = deck[i] + 1
 	}
 
 	return p
