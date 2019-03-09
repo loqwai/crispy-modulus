@@ -1,6 +1,7 @@
 package game
 
 import (
+	"fmt"
 	"math/rand"
 )
 
@@ -14,6 +15,7 @@ type Player struct {
 type Game interface {
 	GetState() State
 	SetState(state State)
+	Draw() error
 }
 
 // State describe what state the game is currently in. It is serializable
@@ -88,4 +90,39 @@ func (g *_Game) String() string {
   Player1 | 2 3 4 |       1 5 |     9 |       4 |
   Player2 | 1 4 5 |       2 3 |    10 |       0 |
 	`
+}
+
+func nextCard(modulus int, hand []int) (int, error) {
+	if len(hand) >= modulus {
+		return 0, fmt.Errorf("no next card")
+	}
+
+	card := 0
+	for {
+		card = rand.Intn(modulus) + 1
+		if !contains(hand, card) {
+			return card, nil
+		}
+	}
+}
+
+func (g *_Game) Draw() error {
+	currentPlayer := g.state.Players[g.state.CurrentPlayer]
+	card, err := nextCard(g.state.CardCount, currentPlayer.MyCards)
+	if err != nil {
+		return err
+	}
+
+	g.state.Players[g.state.CurrentPlayer].MyCards = append(currentPlayer.MyCards, card)
+	g.state.CurrentPlayer = (g.state.CurrentPlayer + 1) % len(g.state.Players)
+	return nil
+}
+
+func contains(s []int, e int) bool {
+	for _, a := range s {
+		if a == e {
+			return true
+		}
+	}
+	return false
 }

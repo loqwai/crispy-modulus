@@ -9,6 +9,20 @@ import (
 	"github.com/loqwai/crispy-modulus/game"
 )
 
+func IsHandSane(cards []int) bool {
+	for i := 0; i < 2; i++ {
+		for j := 0; j < 2; j++ {
+			if i == j {
+				continue
+			}
+			if cards[i] == cards[j] {
+				return false
+			}
+		}
+	}
+	return true
+}
+
 var _ = Describe("game", func() {
 	BeforeEach(func() {
 		rand.Seed(0)
@@ -45,6 +59,74 @@ var _ = Describe("game", func() {
 				Expect(g.GetState().CurrentPlayer).To(Equal(1))
 			})
 		})
+
+		Describe("Draw()", func() {
+			var s game.State
+
+			BeforeEach(func() {
+				g.Draw()
+				s = g.GetState()
+			})
+
+			It("Should add a card to the current player's hand", func() {
+				Expect(s.Players[0].MyCards).To(HaveLen(2))
+			})
+
+			It("Should add a valid card to the current player's hand", func() {
+				Expect(s.Players[0].MyCards).To(HaveLen(2))
+			})
+
+			It("Should become the next player's turn", func() {
+				Expect(s.CurrentPlayer).To(Equal(1))
+			})
+
+			It("Should populate the hand with numbers between 1-5", func() {
+				p := s.Players[0]
+				for i := 0; i < 2; i++ {
+					Expect(p.MyCards[i]).To(BeNumerically(">=", 1))
+					Expect(p.MyCards[i]).To(BeNumerically("<=", 5))
+				}
+			})
+
+			It("Should not populate the hand with the same card twice", func() {
+				Expect(s.Players[0].MyCards).To(BeASaneHand())
+			})
+
+			Describe("when Draw is called a second time", func() {
+				BeforeEach(func() {
+					g.Draw()
+				})
+
+				It("should be the other player's turn now", func() {
+					Expect(g.GetState().CurrentPlayer).To(Equal(0))
+				})
+
+				It("should have a sane hand", func() {
+					Expect(s.Players[1].MyCards).To(BeASaneHand())
+				})
+			})
+			Describe("when Draw is called and there are no cards to draw", func() {
+				var err error
+				BeforeEach(func() {
+					g.SetState(game.State{
+						CardCount: 3,
+						Players: []game.Player{
+							game.Player{MyCards: []int{1, 2, 3}},
+							game.Player{MyCards: []int{1, 2, 3}},
+						},
+					})
+					err = g.Draw()
+				})
+
+				It("should be the other player's turn now", func() {
+					Expect(err).To(HaveOccurred())
+				})
+
+				It("should have a sane hand", func() {
+					Expect(s.Players[1].MyCards).To(BeASaneHand())
+				})
+			})
+		})
 	})
 
 	Describe("Player", func() {
@@ -68,14 +150,7 @@ var _ = Describe("game", func() {
 		It("Should not populate the hand with the same card twice", func() {
 			for i := 0; i < 100; i++ {
 				p2 := game.NewPlayer(5)
-				for j := 0; j < 2; j++ {
-					for k := 0; k < 2; k++ {
-						if j == k {
-							continue
-						}
-						Expect(p2.MyCards[j]).NotTo(Equal(p2.MyCards[k]))
-					}
-				}
+				Expect(p2.MyCards).To(BeASaneHand())
 			}
 		})
 
