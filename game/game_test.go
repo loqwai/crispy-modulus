@@ -10,18 +10,40 @@ import (
 )
 
 var _ = Describe("game", func() {
+	BeforeEach(func() {
+		rand.Seed(0)
+	})
 
 	Describe("Game", func() {
 		var g game.Game
 
 		BeforeEach(func() {
-			rand.Seed(0)
-			g = game.New()
+			g = game.New(3)
 		})
 
 		It("Should instantiate 2 players by default", func() {
 			players := g.GetState().Players
 			Expect(len(players)).To(Equal(2))
+		})
+
+		It("Should be the player with the greatest modulus's turn", func() {
+			Expect(g.GetState().CurrentPlayer).To(Equal(0))
+		})
+
+		Describe("When the second player has the higher modulus", func() {
+			BeforeEach(func() {
+				g.SetState(game.State{
+					CardCount: 3,
+					Players: []game.Player{
+						game.Player{MyCards: []int{3}},
+						game.Player{MyCards: []int{1}},
+					},
+				})
+			})
+
+			It("Should be the second player's turn", func() {
+				Expect(g.GetState().CurrentPlayer).To(Equal(1))
+			})
 		})
 	})
 
@@ -29,25 +51,25 @@ var _ = Describe("game", func() {
 		var p game.Player
 
 		BeforeEach(func() {
-			p = game.NewPlayer()
+			p = game.NewPlayer(5)
 		})
 
-		It("Should instantiate a player with 5 cards by default", func() {
-			Expect((len(p.MyCards))).To(Equal(5))
+		It("Should instantiate a player with 2 cards by default", func() {
+			Expect((len(p.MyCards))).To(Equal(2))
 		})
 
-		It("Should populate the hand with numbers between 1-10", func() {
-			for i := 0; i < 5; i++ {
-				Expect(p.MyCards[i]).To(BeNumerically(">", 0))
-				Expect(p.MyCards[i]).To(BeNumerically("<", 11))
+		It("Should populate the hand with numbers between 1-5", func() {
+			for i := 0; i < 2; i++ {
+				Expect(p.MyCards[i]).To(BeNumerically(">=", 1))
+				Expect(p.MyCards[i]).To(BeNumerically("<=", 5))
 			}
 		})
 
 		It("Should not populate the hand with the same card twice", func() {
 			for i := 0; i < 100; i++ {
-				p2 := game.NewPlayer()
-				for j := 0; j < 5; j++ {
-					for k := 0; k < 5; k++ {
+				p2 := game.NewPlayer(5)
+				for j := 0; j < 2; j++ {
+					for k := 0; k < 2; k++ {
 						if j == k {
 							continue
 						}

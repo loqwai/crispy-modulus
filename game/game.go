@@ -13,20 +13,25 @@ type Player struct {
 // Game represents an instance of the game
 type Game interface {
 	GetState() State
+	SetState(state State)
 }
 
 // State describe what state the game is currently in. It is serializable
 type State struct {
-	Players []Player
+	CardCount     int
+	CurrentPlayer int
+	Players       []Player
 }
 
 // New returns a new Game instance
-func New() Game {
+func New(cardCount int) Game {
 	return &_Game{
 		state: &State{
+			CardCount:     cardCount,
+			CurrentPlayer: 0,
 			Players: []Player{
-				NewPlayer(),
-				NewPlayer(),
+				NewPlayer(cardCount),
+				NewPlayer(cardCount),
 			},
 		},
 	}
@@ -37,12 +42,11 @@ type _Game struct {
 }
 
 // NewPlayer returns a new Player instance
-func NewPlayer() Player {
-	cardCount := 10
+func NewPlayer(cardCount int) Player {
 	initialHandCount := cardCount / 2
 	deck := rand.Perm(cardCount)
 	p := Player{
-		MyCards:    make([]int, 5),
+		MyCards:    make([]int, initialHandCount),
 		TheirCards: make([]int, 0),
 	}
 
@@ -55,6 +59,27 @@ func NewPlayer() Player {
 
 func (g *_Game) GetState() State {
 	return *g.state
+}
+
+func (g *_Game) SetState(state State) {
+	g.state = &state
+
+	currentPlayer := 0
+	maxMod := 0
+
+	for i, p := range g.state.Players {
+		sum := 0
+		for _, c := range p.MyCards {
+			sum += c
+		}
+
+		mod := sum % g.state.CardCount
+		if mod > maxMod {
+			maxMod = mod
+			currentPlayer = i
+		}
+	}
+	g.state.CurrentPlayer = currentPlayer
 }
 
 func (g *_Game) String() string {
