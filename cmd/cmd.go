@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 
@@ -11,9 +12,15 @@ import (
 var rootCmd = &cobra.Command{
 	Use:   "crispy-modulus",
 	Short: "crispy-modulus is a card game",
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		g := game.New()
-		fmt.Println(g.String())
+		s := g.GetState()
+		output, err := json.MarshalIndent(s, "", "  ")
+		if err != nil {
+			return err
+		}
+		fmt.Println(string(output))
+		return nil
 	},
 }
 
