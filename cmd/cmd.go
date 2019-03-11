@@ -31,7 +31,10 @@ var rootCmd = &cobra.Command{
 			if err != nil {
 				return err
 			}
-			g.Draw()
+			err = g.Draw()
+			if err != nil {
+				return err
+			}
 		}
 	},
 }
