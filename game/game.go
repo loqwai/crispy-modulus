@@ -115,7 +115,8 @@ func (g *_Game) Draw() error {
 
 //Player represents the data of a single player.
 type Player struct {
-	state PlayerState
+	cardCount int
+	state     PlayerState
 }
 
 // NewPlayer returns a new Player instance
@@ -123,6 +124,7 @@ func NewPlayer(cardCount int) *Player {
 	// initialHandCount := cardCount / 2
 	// deck := rand.Perm(cardCount)
 	p := &Player{
+		cardCount: cardCount,
 		state: PlayerState{
 			MyCards:    make([]int, 0),
 			TheirCards: make([]int, 0),
@@ -142,6 +144,17 @@ func NewPlayerFromData(data PlayerState) *Player {
 	return &Player{
 		state: data,
 	}
+}
+
+// Draw draws a card
+func (p *Player) Draw() error {
+	card, err := nextCard(p.cardCount, p.state.MyCards)
+	if err != nil {
+		return err
+	}
+
+	p.state.MyCards = append(p.state.MyCards, card)
+	return nil
 }
 
 // State returns the state of the player

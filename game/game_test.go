@@ -177,29 +177,52 @@ var _ = Describe("game", func() {
 	})
 
 	Describe("Player", func() {
-		var state game.PlayerState
+		Describe("NewPlayer", func() {
+			var player *game.Player
+			var state game.PlayerState
 
-		BeforeEach(func() {
-			state = game.NewPlayer(5).State()
+			BeforeEach(func() {
+				player = game.NewPlayer(5)
+				state = player.State()
+			})
+
+			It("Should instantiate a player with 0 cards by default", func() {
+				Expect(len(state.MyCards)).To(Equal(0))
+			})
 		})
 
-		It("Should instantiate a player with 0 cards by default", func() {
-			Expect(len(state.MyCards)).To(Equal(0))
+		Describe("Draw()", func() {
+			Describe("When called", func() {
+				var state game.PlayerState
+
+				BeforeEach(func() {
+					player := game.NewPlayer(5)
+					err := player.Draw()
+					Expect(err).NotTo(HaveOccurred())
+					state = player.State()
+				})
+
+				It("Should populate the hand with numbers between 1-5", func() {
+					Expect(state.MyCards[0]).To(BeNumerically(">=", 1))
+				})
+			})
+
+			Describe("When called 100 times", func() {
+				var states []game.PlayerState
+
+				BeforeEach(func() {
+					for i := 0; i < 100; i++ {
+						states = append(states, game.NewPlayer(5).State())
+					}
+				})
+
+				It("Should not populate the hand with the same card twice", func() {
+					for _, s := range states {
+						Expect(s.MyCards).To(BeASaneHand())
+					}
+				})
+			})
 		})
-
-		// It("Should populate the hand with numbers between 1-5", func() {
-		// 	for i := 0; i < 2; i++ {
-		// 		Expect(state.MyCards[i]).To(BeNumerically(">=", 1))
-		// 		Expect(state.MyCards[i]).To(BeNumerically("<=", 5))
-		// 	}
-		// })
-
-		// It("Should not populate the hand with the same card twice", func() {
-		// 	for i := 0; i < 100; i++ {
-		// 		s := game.NewPlayer(5).State()
-		// 		Expect(s.MyCards).To(BeASaneHand())
-		// 	}
-		// })
 
 		// It("Should instantiate a player with no opponent cards by default", func() {
 		// 	Expect(len(p.TheirCards)).To(Equal(0))
