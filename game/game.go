@@ -13,6 +13,7 @@ type Player struct {
 
 // Game represents an instance of the game
 type Game interface {
+	Start()
 	GetState() State
 	SetState(state State)
 	Draw() error
@@ -63,9 +64,7 @@ func (g *_Game) GetState() State {
 	return *g.state
 }
 
-func (g *_Game) SetState(state State) {
-	g.state = &state
-
+func (g *_Game) Start() {
 	currentPlayer := 0
 	maxMod := 0
 
@@ -82,6 +81,10 @@ func (g *_Game) SetState(state State) {
 		}
 	}
 	g.state.CurrentPlayer = currentPlayer
+}
+
+func (g *_Game) SetState(state State) {
+	g.state = &state
 }
 
 func (g *_Game) String() string {

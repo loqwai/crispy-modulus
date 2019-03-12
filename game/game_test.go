@@ -44,20 +44,44 @@ var _ = Describe("game", func() {
 			Expect(g.GetState().CurrentPlayer).To(Equal(0))
 		})
 
-		Describe("When the second player has the higher modulus", func() {
-			BeforeEach(func() {
-				g.SetState(game.State{
-					CardCount: 3,
-					Players: []game.Player{
-						game.Player{MyCards: []int{3}},
-						game.Player{MyCards: []int{1}},
-					},
+		Describe("Start()", func() {
+			Describe("When the second player has the higher modulus", func() {
+				BeforeEach(func() {
+					g.SetState(game.State{
+						CurrentPlayer: 0,
+						CardCount:     3,
+						Players: []game.Player{
+							game.Player{MyCards: []int{3}},
+							game.Player{MyCards: []int{1}},
+						},
+					})
+					g.Start()
+				})
+
+				It("Should be the second player's turn", func() {
+					Expect(g.GetState().CurrentPlayer).To(Equal(1))
+				})
+			})
+		})
+
+		Describe("SetState()", func() {
+			Describe("When the second player has the higher modulus, and Start() hasn't been called", func() {
+				BeforeEach(func() {
+					g.SetState(game.State{
+						CurrentPlayer: 0,
+						CardCount:     3,
+						Players: []game.Player{
+							game.Player{MyCards: []int{3}},
+							game.Player{MyCards: []int{1}},
+						},
+					})
+				})
+
+				It("Should not set player 2 to be the current player (in case we are restoring a saved game)", func() {
+					Expect(g.GetState().CurrentPlayer).To(Equal(0))
 				})
 			})
 
-			It("Should be the second player's turn", func() {
-				Expect(g.GetState().CurrentPlayer).To(Equal(1))
-			})
 		})
 
 		Describe("Draw()", func() {
