@@ -5,15 +5,10 @@ import (
 	"math/rand"
 )
 
-//Player represents the data of a single player.
-type Player struct {
-	MyCards    []int
-	TheirCards []int
-}
-
 // Game represents an instance of the game
 type Game interface {
-	Start()
+	// Start()
+	ComputeFirstPlayer()
 	GetState() State
 	SetState(state State)
 	Draw() error
@@ -24,6 +19,10 @@ type State struct {
 	CardCount     int
 	CurrentPlayer int
 	Players       []Player
+}
+
+type _Game struct {
+	state *State
 }
 
 // New returns a new Game instance
@@ -40,31 +39,11 @@ func New(cardCount int) Game {
 	}
 }
 
-type _Game struct {
-	state *State
-}
-
-// NewPlayer returns a new Player instance
-func NewPlayer(cardCount int) Player {
-	initialHandCount := cardCount / 2
-	deck := rand.Perm(cardCount)
-	p := Player{
-		MyCards:    make([]int, initialHandCount),
-		TheirCards: make([]int, 0),
-	}
-
-	for i := 0; i < initialHandCount; i++ {
-		p.MyCards[i] = deck[i] + 1
-	}
-
-	return p
-}
-
 func (g *_Game) GetState() State {
 	return *g.state
 }
 
-func (g *_Game) Start() {
+func (g *_Game) ComputeFirstPlayer() {
 	currentPlayer := 0
 	maxMod := 0
 
@@ -81,6 +60,10 @@ func (g *_Game) Start() {
 		}
 	}
 	g.state.CurrentPlayer = currentPlayer
+}
+
+func (g *_Game) Start() {
+
 }
 
 func (g *_Game) SetState(state State) {
@@ -119,6 +102,28 @@ func (g *_Game) Draw() error {
 	g.state.Players[g.state.CurrentPlayer].MyCards = append(currentPlayer.MyCards, card)
 	g.state.CurrentPlayer = (g.state.CurrentPlayer + 1) % len(g.state.Players)
 	return nil
+}
+
+//Player represents the data of a single player.
+type Player struct {
+	MyCards    []int
+	TheirCards []int
+}
+
+// NewPlayer returns a new Player instance
+func NewPlayer(cardCount int) Player {
+	initialHandCount := cardCount / 2
+	deck := rand.Perm(cardCount)
+	p := Player{
+		MyCards:    make([]int, initialHandCount),
+		TheirCards: make([]int, 0),
+	}
+
+	for i := 0; i < initialHandCount; i++ {
+		p.MyCards[i] = deck[i] + 1
+	}
+
+	return p
 }
 
 func contains(s []int, e int) bool {

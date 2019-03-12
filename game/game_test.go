@@ -44,7 +44,7 @@ var _ = Describe("game", func() {
 			Expect(g.GetState().CurrentPlayer).To(Equal(0))
 		})
 
-		Describe("Start()", func() {
+		Describe("ComputeFirstPlayer()()", func() {
 			Describe("When the second player has the higher modulus", func() {
 				BeforeEach(func() {
 					g.SetState(game.State{
@@ -55,7 +55,7 @@ var _ = Describe("game", func() {
 							game.Player{MyCards: []int{1}},
 						},
 					})
-					g.Start()
+					g.ComputeFirstPlayer()
 				})
 
 				It("Should be the second player's turn", func() {
