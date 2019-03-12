@@ -11,6 +11,7 @@ type Game interface {
 	ComputeFirstPlayer()
 	GetState() State
 	SetState(state State)
+	Start() error
 	Draw() error
 }
 
@@ -18,7 +19,13 @@ type Game interface {
 type State struct {
 	CardCount     int
 	CurrentPlayer int
-	Players       []Player
+	Players       []PlayerState
+}
+
+// PlayerState represents the state of a particular player
+type PlayerState struct {
+	MyCards    []int
+	TheirCards []int
 }
 
 type _Game struct {
@@ -31,9 +38,9 @@ func New(cardCount int) Game {
 		state: &State{
 			CardCount:     cardCount,
 			CurrentPlayer: 0,
-			Players: []Player{
-				NewPlayer(cardCount),
-				NewPlayer(cardCount),
+			Players: []PlayerState{
+				NewPlayer(cardCount).State(),
+				NewPlayer(cardCount).State(),
 			},
 		},
 	}
@@ -62,8 +69,10 @@ func (g *_Game) ComputeFirstPlayer() {
 	g.state.CurrentPlayer = currentPlayer
 }
 
-func (g *_Game) Start() {
-
+func (g *_Game) Start() error {
+	g.Draw()
+	g.Draw()
+	return nil
 }
 
 func (g *_Game) SetState(state State) {
@@ -106,24 +115,38 @@ func (g *_Game) Draw() error {
 
 //Player represents the data of a single player.
 type Player struct {
-	MyCards    []int
-	TheirCards []int
+	state PlayerState
 }
 
 // NewPlayer returns a new Player instance
-func NewPlayer(cardCount int) Player {
-	initialHandCount := cardCount / 2
-	deck := rand.Perm(cardCount)
-	p := Player{
-		MyCards:    make([]int, initialHandCount),
-		TheirCards: make([]int, 0),
+func NewPlayer(cardCount int) *Player {
+	// initialHandCount := cardCount / 2
+	// deck := rand.Perm(cardCount)
+	p := &Player{
+		state: PlayerState{
+			MyCards:    make([]int, 0),
+			TheirCards: make([]int, 0),
+		},
 	}
 
-	for i := 0; i < initialHandCount; i++ {
-		p.MyCards[i] = deck[i] + 1
-	}
+	// for i := 0; i < initialHandCount; i++ {
+	// 	p.MyCards[i] = deck[i] + 1
+	// }
 
 	return p
+}
+
+// NewPlayerFromData constructs a new player
+// instance from a player data object
+func NewPlayerFromData(data PlayerState) *Player {
+	return &Player{
+		state: data,
+	}
+}
+
+// State returns the state of the player
+func (p *Player) State() PlayerState {
+	return p.state
 }
 
 func contains(s []int, e int) bool {

@@ -44,15 +44,19 @@ var _ = Describe("game", func() {
 			Expect(g.GetState().CurrentPlayer).To(Equal(0))
 		})
 
+		It("Should give both players empty hands", func() {
+			Expect(g.GetState().Players[0].MyCards).To(HaveLen(0))
+		})
+
 		Describe("ComputeFirstPlayer()()", func() {
 			Describe("When the second player has the higher modulus", func() {
 				BeforeEach(func() {
 					g.SetState(game.State{
 						CurrentPlayer: 0,
 						CardCount:     3,
-						Players: []game.Player{
-							game.Player{MyCards: []int{3}},
-							game.Player{MyCards: []int{1}},
+						Players: []game.PlayerState{
+							game.PlayerState{MyCards: []int{3}},
+							game.PlayerState{MyCards: []int{1}},
 						},
 					})
 					g.ComputeFirstPlayer()
@@ -64,15 +68,32 @@ var _ = Describe("game", func() {
 			})
 		})
 
+		Describe("Start()", func() {
+			Describe("When called", func() {
+				BeforeEach(func() {
+					err := g.Start()
+					Expect(err).NotTo(HaveOccurred())
+				})
+
+				It("Should give player 1 1 card", func() {
+					Expect(g.GetState().Players[0].MyCards).To(HaveLen(1))
+				})
+
+				It("Should give player 2 1 card", func() {
+					Expect(g.GetState().Players[1].MyCards).To(HaveLen(1))
+				})
+			})
+		})
+
 		Describe("SetState()", func() {
 			Describe("When the second player has the higher modulus, and Start() hasn't been called", func() {
 				BeforeEach(func() {
 					g.SetState(game.State{
 						CurrentPlayer: 0,
 						CardCount:     3,
-						Players: []game.Player{
-							game.Player{MyCards: []int{3}},
-							game.Player{MyCards: []int{1}},
+						Players: []game.PlayerState{
+							game.PlayerState{MyCards: []int{3}},
+							game.PlayerState{MyCards: []int{1}},
 						},
 					})
 				})
@@ -88,6 +109,7 @@ var _ = Describe("game", func() {
 			var s game.State
 
 			BeforeEach(func() {
+				g.Start()
 				g.Draw()
 				s = g.GetState()
 			})
@@ -129,14 +151,15 @@ var _ = Describe("game", func() {
 					Expect(s.Players[1].MyCards).To(BeASaneHand())
 				})
 			})
+
 			Describe("when Draw is called and there are no cards to draw", func() {
 				var err error
 				BeforeEach(func() {
 					g.SetState(game.State{
 						CardCount: 3,
-						Players: []game.Player{
-							game.Player{MyCards: []int{1, 2, 3}},
-							game.Player{MyCards: []int{1, 2, 3}},
+						Players: []game.PlayerState{
+							game.PlayerState{MyCards: []int{1, 2, 3}},
+							game.PlayerState{MyCards: []int{1, 2, 3}},
 						},
 					})
 					err = g.Draw()
@@ -154,32 +177,32 @@ var _ = Describe("game", func() {
 	})
 
 	Describe("Player", func() {
-		var p game.Player
+		var state game.PlayerState
 
 		BeforeEach(func() {
-			p = game.NewPlayer(5)
+			state = game.NewPlayer(5).State()
 		})
 
-		It("Should instantiate a player with 2 cards by default", func() {
-			Expect((len(p.MyCards))).To(Equal(2))
+		It("Should instantiate a player with 0 cards by default", func() {
+			Expect(len(state.MyCards)).To(Equal(0))
 		})
 
-		It("Should populate the hand with numbers between 1-5", func() {
-			for i := 0; i < 2; i++ {
-				Expect(p.MyCards[i]).To(BeNumerically(">=", 1))
-				Expect(p.MyCards[i]).To(BeNumerically("<=", 5))
-			}
-		})
+		// It("Should populate the hand with numbers between 1-5", func() {
+		// 	for i := 0; i < 2; i++ {
+		// 		Expect(state.MyCards[i]).To(BeNumerically(">=", 1))
+		// 		Expect(state.MyCards[i]).To(BeNumerically("<=", 5))
+		// 	}
+		// })
 
-		It("Should not populate the hand with the same card twice", func() {
-			for i := 0; i < 100; i++ {
-				p2 := game.NewPlayer(5)
-				Expect(p2.MyCards).To(BeASaneHand())
-			}
-		})
+		// It("Should not populate the hand with the same card twice", func() {
+		// 	for i := 0; i < 100; i++ {
+		// 		s := game.NewPlayer(5).State()
+		// 		Expect(s.MyCards).To(BeASaneHand())
+		// 	}
+		// })
 
-		It("Should instantiate a player with no opponent cards by default", func() {
-			Expect(len(p.TheirCards)).To(Equal(0))
-		})
+		// It("Should instantiate a player with no opponent cards by default", func() {
+		// 	Expect(len(p.TheirCards)).To(Equal(0))
+		// })
 	})
 })
