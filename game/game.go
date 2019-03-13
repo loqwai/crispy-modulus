@@ -25,8 +25,7 @@ type State struct {
 
 // PlayerState represents the state of a particular player
 type PlayerState struct {
-	MyCards    []int
-	TheirCards []int
+	Cards []int
 }
 
 type _Game struct {
@@ -57,7 +56,7 @@ func (g *_Game) ComputeFirstPlayer() {
 
 	for i, p := range g.state.Players {
 		sum := 0
-		for _, c := range p.MyCards {
+		for _, c := range p.Cards {
 			sum += c
 		}
 

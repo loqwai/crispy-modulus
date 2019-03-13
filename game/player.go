@@ -15,13 +15,12 @@ func NewPlayer(cardCount int) *Player {
 	p := &Player{
 		cardCount: cardCount,
 		state: PlayerState{
-			MyCards:    make([]int, 0),
-			TheirCards: make([]int, 0),
+			Cards: make([]int, 0),
 		},
 	}
 
 	// for i := 0; i < initialHandCount; i++ {
-	// 	p.MyCards[i] = deck[i] + 1
+	// 	p.Cards[i] = deck[i] + 1
 	// }
 
 	return p
@@ -38,18 +37,18 @@ func NewPlayerFromState(cardCount int, data PlayerState) *Player {
 
 // Draw draws a card
 func (p *Player) Draw() error {
-	card, err := nextCard(p.cardCount, p.state.MyCards)
+	card, err := nextCard(p.cardCount, p.state.Cards)
 	if err != nil {
 		return err
 	}
 
-	p.state.MyCards = append(p.state.MyCards, card)
+	p.state.Cards = append(p.state.Cards, card)
 	return nil
 }
 
 // Give adds the negative card value to the player's hand
 func (p *Player) Give(card int) {
-	p.state.MyCards = append(p.state.MyCards, -1*card)
+	p.state.Cards = append(p.state.Cards, -1*card)
 }
 
 // State returns the state of the player
@@ -59,11 +58,11 @@ func (p *Player) State() PlayerState {
 
 // Steal removes the card from the player's hand
 func (p *Player) Steal(card int) error {
-	for i, c := range p.state.MyCards {
+	for i, c := range p.state.Cards {
 		if c == card {
-			p.state.MyCards = append(p.state.MyCards[:i], p.state.MyCards[i+1:]...)
+			p.state.Cards = append(p.state.Cards[:i], p.state.Cards[i+1:]...)
 			return nil
 		}
 	}
-	return fmt.Errorf("Card %v not found in hand: %v", card, p.state.MyCards)
+	return fmt.Errorf("Card %v not found in hand: %v", card, p.state.Cards)
 }

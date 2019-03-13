@@ -24,7 +24,7 @@ var _ = Describe("Player", func() {
 		})
 
 		It("Should instantiate a player with 0 cards by default", func() {
-			Expect(len(state.MyCards)).To(Equal(0))
+			Expect(len(state.Cards)).To(Equal(0))
 		})
 	})
 
@@ -40,7 +40,7 @@ var _ = Describe("Player", func() {
 			})
 
 			It("Should populate the hand with numbers between 1-5", func() {
-				Expect(state.MyCards[0]).To(BeNumerically(">=", 1))
+				Expect(state.Cards[0]).To(BeNumerically(">=", 1))
 			})
 		})
 
@@ -55,7 +55,7 @@ var _ = Describe("Player", func() {
 
 			It("Should not populate the hand with the same card twice", func() {
 				for _, s := range states {
-					Expect(s.MyCards).To(BeASaneHand())
+					Expect(s.Cards).To(BeASaneHand())
 				}
 			})
 		})
@@ -67,7 +67,7 @@ var _ = Describe("Player", func() {
 
 			BeforeEach(func() {
 				player = game.NewPlayerFromState(3, game.PlayerState{
-					MyCards: []int{1},
+					Cards: []int{1},
 				})
 			})
 
@@ -79,7 +79,7 @@ var _ = Describe("Player", func() {
 
 				It("Should remove the 1 card from the player's hand", func() {
 					s := player.State()
-					Expect(s.MyCards).To(Equal([]int{}))
+					Expect(s.Cards).To(Equal([]int{}))
 				})
 			})
 
@@ -103,7 +103,7 @@ var _ = Describe("Player", func() {
 
 			BeforeEach(func() {
 				player = game.NewPlayerFromState(3, game.PlayerState{
-					MyCards: []int{},
+					Cards: []int{},
 				})
 			})
 
@@ -113,7 +113,7 @@ var _ = Describe("Player", func() {
 				})
 
 				It("Adds the negative card value to the player's hand", func() {
-					cards := player.State().MyCards
+					cards := player.State().Cards
 					Expect(cards).To(Equal([]int{-1}))
 				})
 			})

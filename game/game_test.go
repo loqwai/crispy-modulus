@@ -27,7 +27,7 @@ var _ = Describe("Game", func() {
 	})
 
 	It("Should give both players empty hands", func() {
-		Expect(g.State().Players[0].MyCards).To(HaveLen(0))
+		Expect(g.State().Players[0].Cards).To(HaveLen(0))
 	})
 
 	Describe("ComputeFirstPlayer()()", func() {
@@ -37,8 +37,8 @@ var _ = Describe("Game", func() {
 					CurrentPlayer: 0,
 					CardCount:     3,
 					Players: []game.PlayerState{
-						game.PlayerState{MyCards: []int{3}},
-						game.PlayerState{MyCards: []int{1}},
+						game.PlayerState{Cards: []int{3}},
+						game.PlayerState{Cards: []int{1}},
 					},
 				})
 				g.ComputeFirstPlayer()
@@ -58,11 +58,11 @@ var _ = Describe("Game", func() {
 			})
 
 			It("Should give player 1 1 card", func() {
-				Expect(g.State().Players[0].MyCards).To(HaveLen(1))
+				Expect(g.State().Players[0].Cards).To(HaveLen(1))
 			})
 
 			It("Should give player 2 1 card", func() {
-				Expect(g.State().Players[1].MyCards).To(HaveLen(1))
+				Expect(g.State().Players[1].Cards).To(HaveLen(1))
 			})
 		})
 	})
@@ -74,8 +74,8 @@ var _ = Describe("Game", func() {
 					CurrentPlayer: 0,
 					CardCount:     3,
 					Players: []game.PlayerState{
-						game.PlayerState{MyCards: []int{3}},
-						game.PlayerState{MyCards: []int{1}},
+						game.PlayerState{Cards: []int{3}},
+						game.PlayerState{Cards: []int{1}},
 					},
 				})
 			})
@@ -97,11 +97,11 @@ var _ = Describe("Game", func() {
 		})
 
 		It("Should add a card to the current player's hand", func() {
-			Expect(s.Players[0].MyCards).To(HaveLen(2))
+			Expect(s.Players[0].Cards).To(HaveLen(2))
 		})
 
 		It("Should add a valid card to the current player's hand", func() {
-			Expect(s.Players[0].MyCards).To(HaveLen(2))
+			Expect(s.Players[0].Cards).To(HaveLen(2))
 		})
 
 		It("Should become the next player's turn", func() {
@@ -111,13 +111,13 @@ var _ = Describe("Game", func() {
 		It("Should populate the hand with numbers between 1-5", func() {
 			p := s.Players[0]
 			for i := 0; i < 2; i++ {
-				Expect(p.MyCards[i]).To(BeNumerically(">=", 1))
-				Expect(p.MyCards[i]).To(BeNumerically("<=", 5))
+				Expect(p.Cards[i]).To(BeNumerically(">=", 1))
+				Expect(p.Cards[i]).To(BeNumerically("<=", 5))
 			}
 		})
 
 		It("Should not populate the hand with the same card twice", func() {
-			Expect(s.Players[0].MyCards).To(BeASaneHand())
+			Expect(s.Players[0].Cards).To(BeASaneHand())
 		})
 
 		Describe("when Draw is called a second time", func() {
@@ -130,7 +130,7 @@ var _ = Describe("Game", func() {
 			})
 
 			It("should have a sane hand", func() {
-				Expect(s.Players[1].MyCards).To(BeASaneHand())
+				Expect(s.Players[1].Cards).To(BeASaneHand())
 			})
 		})
 
@@ -140,8 +140,8 @@ var _ = Describe("Game", func() {
 				g.SetState(game.State{
 					CardCount: 3,
 					Players: []game.PlayerState{
-						game.PlayerState{MyCards: []int{1, 2, 3}},
-						game.PlayerState{MyCards: []int{1, 2, 3}},
+						game.PlayerState{Cards: []int{1, 2, 3}},
+						game.PlayerState{Cards: []int{1, 2, 3}},
 					},
 				})
 				err = g.Draw()
@@ -152,7 +152,7 @@ var _ = Describe("Game", func() {
 			})
 
 			It("should have a sane hand", func() {
-				Expect(s.Players[1].MyCards).To(BeASaneHand())
+				Expect(s.Players[1].Cards).To(BeASaneHand())
 			})
 		})
 	})
@@ -164,8 +164,8 @@ var _ = Describe("Game", func() {
 					CardCount:     3,
 					CurrentPlayer: 0,
 					Players: []game.PlayerState{
-						game.PlayerState{MyCards: []int{1, 2}},
-						game.PlayerState{MyCards: []int{2, 3}},
+						game.PlayerState{Cards: []int{1, 2}},
+						game.PlayerState{Cards: []int{2, 3}},
 					},
 				})
 			})
@@ -178,12 +178,12 @@ var _ = Describe("Game", func() {
 					})
 
 					It("Should add the negative card to the first player's cards", func() {
-						cards := g.State().Players[0].MyCards
+						cards := g.State().Players[0].Cards
 						Expect(cards).To(Equal([]int{1, 2, -3}))
 					})
 
 					It("Should remove the card from the second player's cards", func() {
-						cards := g.State().Players[1].MyCards
+						cards := g.State().Players[1].Cards
 						Expect(cards).To(Equal([]int{2}))
 					})
 				})
