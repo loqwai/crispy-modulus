@@ -17,26 +17,41 @@ var rootCmd = &cobra.Command{
 		g := game.New(3)
 
 		for {
-			s := g.GetState()
-			output, err := json.MarshalIndent(s, "", "  ")
+			err := printState(g.GetState())
 			if err != nil {
 				return err
 			}
 
-			fmt.Println(string(output))
-			fmt.Println("Whatcha wanna do? (d: draw)")
-
-			reader := bufio.NewReader(os.Stdin)
-			_, err = reader.ReadString('\n')
+			_, err = getCommand()
 			if err != nil {
 				return err
 			}
+
 			err = g.Draw()
 			if err != nil {
 				return err
 			}
 		}
 	},
+}
+
+func getCommand() (string, error) {
+	_, err := fmt.Println("Whatcha wanna do? (d: draw)")
+	if err != nil {
+		return "", err
+	}
+
+	return bufio.NewReader(os.Stdin).ReadString('\n')
+}
+
+func printState(state game.State) error {
+	output, err := json.MarshalIndent(state, "", "  ")
+	if err != nil {
+		return err
+	}
+
+	_, err = fmt.Println(string(output))
+	return err
 }
 
 // Execute is the main runtime of the application
