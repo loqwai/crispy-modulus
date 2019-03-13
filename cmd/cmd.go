@@ -19,7 +19,7 @@ var rootCmd = &cobra.Command{
 		g := game.New(3)
 
 		for {
-			err := printState(g.GetState())
+			err := printState(g.State())
 			if err != nil {
 				return err
 			}
