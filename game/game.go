@@ -9,9 +9,11 @@ import (
 type Game interface {
 	// Start()
 	ComputeFirstPlayer()
+	// TODO: Rename to State()
 	GetState() State
 	SetState(state State)
 	Start() error
+	Steal(card int) error
 	Draw() error
 }
 
@@ -114,6 +116,24 @@ func (g *_Game) Draw() error {
 	return nil
 }
 
+func (g *_Game) Steal(card int) error {
+	otherPlayerIndex := (g.state.CurrentPlayer + 1) % len(g.state.Players)
+	otherPlayer := NewPlayerFromState(g.state.CardCount, g.state.Players[otherPlayerIndex])
+	err := otherPlayer.Steal(card)
+	if err != nil {
+		return err
+	}
+
+	g.state.Players[otherPlayerIndex] = otherPlayer.State()
+
+	player := NewPlayerFromState(g.state.CardCount, g.state.Players[g.state.CurrentPlayer])
+	player.Give(card)
+	g.state.Players[g.state.CurrentPlayer] = player.State()
+
+	g.state.CurrentPlayer = (g.state.CurrentPlayer + 1) % len(g.state.Players)
+	return nil
+}
+
 //Player represents the data of a single player.
 type Player struct {
 	cardCount int
@@ -159,9 +179,25 @@ func (p *Player) Draw() error {
 	return nil
 }
 
+// Give adds the negative card value to the player's hand
+func (p *Player) Give(card int) {
+	p.state.MyCards = append(p.state.MyCards, -1*card)
+}
+
 // State returns the state of the player
 func (p *Player) State() PlayerState {
 	return p.state
+}
+
+// Steal removes the card from the player's hand
+func (p *Player) Steal(card int) error {
+	for i, c := range p.state.MyCards {
+		if c == card {
+			p.state.MyCards = append(p.state.MyCards[:i], p.state.MyCards[i+1:]...)
+			return nil
+		}
+	}
+	return fmt.Errorf("Card %v not found in hand: %v", card, p.state.MyCards)
 }
 
 func contains(s []int, e int) bool {

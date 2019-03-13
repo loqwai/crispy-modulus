@@ -174,6 +174,40 @@ var _ = Describe("game", func() {
 				})
 			})
 		})
+
+		Describe("Steal()", func() {
+			Describe("When both players have two cards each", func() {
+				BeforeEach(func() {
+					g.SetState(game.State{
+						CardCount:     3,
+						CurrentPlayer: 0,
+						Players: []game.PlayerState{
+							game.PlayerState{MyCards: []int{1, 2}},
+							game.PlayerState{MyCards: []int{2, 3}},
+						},
+					})
+				})
+
+				Describe("When it's the first player's turn", func() {
+					Describe("When the first player steals a card", func() {
+						BeforeEach(func() {
+							err := g.Steal(3)
+							Expect(err).NotTo(HaveOccurred())
+						})
+
+						It("Should add the negative card to the first player's cards", func() {
+							cards := g.GetState().Players[0].MyCards
+							Expect(cards).To(Equal([]int{1, 2, -3}))
+						})
+
+						It("Should remove the card from the second player's cards", func() {
+							cards := g.GetState().Players[1].MyCards
+							Expect(cards).To(Equal([]int{2}))
+						})
+					})
+				})
+			})
+		})
 	})
 
 	Describe("Player", func() {
@@ -220,6 +254,65 @@ var _ = Describe("game", func() {
 					for _, s := range states {
 						Expect(s.MyCards).To(BeASaneHand())
 					}
+				})
+			})
+		})
+
+		Describe("Steal()", func() {
+			Describe("When a player has a 1", func() {
+				var player *game.Player
+
+				BeforeEach(func() {
+					player = game.NewPlayerFromState(3, game.PlayerState{
+						MyCards: []int{1},
+					})
+				})
+
+				Describe("When Steal is called with 1", func() {
+					BeforeEach(func() {
+						err := player.Steal(1)
+						Expect(err).ToNot(HaveOccurred())
+					})
+
+					It("Should remove the 1 card from the player's hand", func() {
+						s := player.State()
+						Expect(s.MyCards).To(Equal([]int{}))
+					})
+				})
+
+				Describe("When Steal is called with 2", func() {
+					var err error
+
+					BeforeEach(func() {
+						err = player.Steal(2)
+					})
+
+					It("Should return an error", func() {
+						Expect(err).To(HaveOccurred())
+					})
+				})
+			})
+		})
+
+		Describe("Give()", func() {
+			Describe("When the player has no cards", func() {
+				var player *game.Player
+
+				BeforeEach(func() {
+					player = game.NewPlayerFromState(3, game.PlayerState{
+						MyCards: []int{},
+					})
+				})
+
+				Describe("When called with a 1", func() {
+					BeforeEach(func() {
+						player.Give(1)
+					})
+
+					It("Adds the negative card value to the player's hand", func() {
+						cards := player.State().MyCards
+						Expect(cards).To(Equal([]int{-1}))
+					})
 				})
 			})
 		})

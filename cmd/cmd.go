@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"strconv"
+	"strings"
 
 	"github.com/loqwai/crispy-modulus/game"
 	"github.com/spf13/cobra"
@@ -22,26 +24,46 @@ var rootCmd = &cobra.Command{
 				return err
 			}
 
-			_, err = getCommand()
+			command, err := getCommand()
 			if err != nil {
 				return err
 			}
 
-			err = g.Draw()
-			if err != nil {
-				return err
+			if command == "d" {
+				err = g.Draw()
+				if err != nil {
+					return err
+				}
+				continue
+			}
+
+			if strings.HasPrefix(command, "s") {
+				val, err := strconv.Atoi(strings.TrimPrefix(command, "s"))
+				if err != nil {
+					return err
+				}
+
+				err = g.Steal(val)
+				if err != nil {
+					return err
+				}
 			}
 		}
 	},
 }
 
 func getCommand() (string, error) {
-	_, err := fmt.Println("Whatcha wanna do? (d: draw)")
+	_, err := fmt.Println("Whatcha wanna do? (d: draw, s#: steal card)")
 	if err != nil {
 		return "", err
 	}
 
-	return bufio.NewReader(os.Stdin).ReadString('\n')
+	command, err := bufio.NewReader(os.Stdin).ReadString('\n')
+	if err != nil {
+		return "", err
+	}
+
+	return strings.TrimSpace(command), nil
 }
 
 func printState(state game.State) error {
