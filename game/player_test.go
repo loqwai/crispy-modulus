@@ -144,7 +144,8 @@ var _ = Describe("Player", func() {
 				})
 			})
 		})
-		Describe("When the player has 1 card, and it's a 2", func() {
+
+		Describe("When the player has 1 card, a 2", func() {
 			var player *game.Player
 
 			BeforeEach(func() {
@@ -162,6 +163,27 @@ var _ = Describe("Player", func() {
 				It("Should calculate the player's score to be 2", func() {
 					s := player.State().Score
 					Expect(s).To(Equal(2))
+				})
+			})
+		})
+		Describe("When the player has 2 cards, a 1 and a 2", func() {
+			var player *game.Player
+
+			BeforeEach(func() {
+				player = game.NewPlayerFromState(game.PlayerState{
+					CardCount: 3,
+					Cards:     []int{1, 2},
+				})
+			})
+
+			Describe("When called", func() {
+				BeforeEach(func() {
+					player.Update()
+				})
+
+				It("Should calculate the player's score to be 0", func() {
+					s := player.State().Score
+					Expect(s).To(Equal(0))
 				})
 			})
 		})

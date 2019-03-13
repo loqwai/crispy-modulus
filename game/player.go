@@ -67,7 +67,7 @@ func (p *Player) Update() {
 		p.state.Score = 0
 		return
 	}
-	p.state.Score = p.state.Cards[0]
+	p.state.Score = ScoreHand(p.state.Cards, p.state.CardCount)
 	return
 }
 
