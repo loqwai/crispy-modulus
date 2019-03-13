@@ -131,17 +131,12 @@ var _ = Describe("Player", func() {
 					CardCount: 3,
 					Cards:     []int{},
 				})
+				player.Update()
 			})
 
-			Describe("When called", func() {
-				BeforeEach(func() {
-					player.Update()
-				})
-
-				It("Should calculate the player's score to be 0", func() {
-					s := player.State().Score
-					Expect(s).To(Equal(0))
-				})
+			It("Should calculate the player's score to be 0", func() {
+				s := player.State().Score
+				Expect(s).To(Equal(0))
 			})
 		})
 
@@ -153,19 +148,15 @@ var _ = Describe("Player", func() {
 					CardCount: 3,
 					Cards:     []int{2},
 				})
+				player.Update()
 			})
 
-			Describe("When called", func() {
-				BeforeEach(func() {
-					player.Update()
-				})
-
-				It("Should calculate the player's score to be 2", func() {
-					s := player.State().Score
-					Expect(s).To(Equal(2))
-				})
+			It("Should calculate the player's score to be 2", func() {
+				s := player.State().Score
+				Expect(s).To(Equal(2))
 			})
 		})
+
 		Describe("When the player has 2 cards, a 1 and a 2", func() {
 			var player *game.Player
 
@@ -174,17 +165,29 @@ var _ = Describe("Player", func() {
 					CardCount: 3,
 					Cards:     []int{1, 2},
 				})
+				player.Update()
 			})
 
-			Describe("When called", func() {
-				BeforeEach(func() {
-					player.Update()
-				})
+			It("Should calculate the player's score to be 0", func() {
+				s := player.State().Score
+				Expect(s).To(Equal(0))
+			})
+		})
 
-				It("Should calculate the player's score to be 0", func() {
-					s := player.State().Score
-					Expect(s).To(Equal(0))
+		Describe("When the player has 2 stolen cards, -1 and -2", func() {
+			var player *game.Player
+
+			BeforeEach(func() {
+				player = game.NewPlayerFromState(game.PlayerState{
+					CardCount: 3,
+					Cards:     []int{-1, -2},
 				})
+				player.Update()
+			})
+
+			It("Should calculate the player's score to be -3", func() {
+				s := player.State().Score
+				Expect(s).To(Equal(-3))
 			})
 		})
 	})

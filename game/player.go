@@ -71,14 +71,23 @@ func (p *Player) Update() {
 	return
 }
 
-//ScoreHand finds the...score...of a...hand.
+// ScoreHand finds the...score...of a...hand.
 func ScoreHand(cards []int, modulus int) int {
-	sum := 0
+	mySum := 0
+	theirSum := 0
 	for _, c := range cards {
-		sum += c
+		if c < 0 {
+			theirSum += c
+			continue
+		}
+		mySum += c
 	}
 
-	return sum % modulus
+	if -1*theirSum > mySum {
+		return mySum + theirSum
+	}
+
+	return (mySum - theirSum) % modulus
 }
 
 // Steal removes the card from the player's hand
