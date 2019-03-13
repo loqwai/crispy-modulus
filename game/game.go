@@ -28,14 +28,14 @@ type _Game struct {
 }
 
 // New returns a new Game instance
-func New(cardCount int) Game {
+func New(CardCount int) Game {
 	return &_Game{
 		state: &State{
-			CardCount:     cardCount,
+			CardCount:     CardCount,
 			CurrentPlayer: 0,
 			Players: []PlayerState{
-				NewPlayer(cardCount).State(),
-				NewPlayer(cardCount).State(),
+				NewPlayer(CardCount).State(),
+				NewPlayer(CardCount).State(),
 			},
 		},
 	}
@@ -97,7 +97,7 @@ func nextCard(modulus int, hand []int) (int, error) {
 }
 
 func (g *_Game) Draw() error {
-	player := NewPlayerFromState(g.state.CardCount, g.state.Players[g.state.CurrentPlayer])
+	player := NewPlayerFromState(g.state.Players[g.state.CurrentPlayer])
 	err := player.Draw()
 	if err != nil {
 		return err
@@ -111,7 +111,7 @@ func (g *_Game) Draw() error {
 
 func (g *_Game) Steal(card int) error {
 	otherPlayerIndex := (g.state.CurrentPlayer + 1) % len(g.state.Players)
-	otherPlayer := NewPlayerFromState(g.state.CardCount, g.state.Players[otherPlayerIndex])
+	otherPlayer := NewPlayerFromState(g.state.Players[otherPlayerIndex])
 	err := otherPlayer.Steal(card)
 	if err != nil {
 		return err
@@ -119,7 +119,7 @@ func (g *_Game) Steal(card int) error {
 
 	g.state.Players[otherPlayerIndex] = otherPlayer.State()
 
-	player := NewPlayerFromState(g.state.CardCount, g.state.Players[g.state.CurrentPlayer])
+	player := NewPlayerFromState(g.state.Players[g.state.CurrentPlayer])
 	player.Give(card)
 	g.state.Players[g.state.CurrentPlayer] = player.State()
 

@@ -66,8 +66,9 @@ var _ = Describe("Player", func() {
 			var player *game.Player
 
 			BeforeEach(func() {
-				player = game.NewPlayerFromState(3, game.PlayerState{
-					Cards: []int{1},
+				player = game.NewPlayerFromState(game.PlayerState{
+					CardCount: 3,
+					Cards:     []int{1},
 				})
 			})
 
@@ -102,8 +103,9 @@ var _ = Describe("Player", func() {
 			var player *game.Player
 
 			BeforeEach(func() {
-				player = game.NewPlayerFromState(3, game.PlayerState{
-					Cards: []int{},
+				player = game.NewPlayerFromState(game.PlayerState{
+					CardCount: 3,
+					Cards:     []int{},
 				})
 			})
 
@@ -125,8 +127,30 @@ var _ = Describe("Player", func() {
 			var player *game.Player
 
 			BeforeEach(func() {
-				player = game.NewPlayerFromState(3, game.PlayerState{
-					Cards: []int{},
+				player = game.NewPlayerFromState(game.PlayerState{
+					CardCount: 3,
+					Cards:     []int{},
+				})
+			})
+
+			Describe("When called", func() {
+				BeforeEach(func() {
+					player.Update()
+				})
+
+				It("Adds the negative card value to the player's hand", func() {
+					s := player.State().Score
+					Expect(s).To(Equal(0))
+				})
+			})
+		})
+		Describe("When the player 1 card, and it's a 4", func() {
+			var player *game.Player
+
+			BeforeEach(func() {
+				player = game.NewPlayerFromState(game.PlayerState{
+					CardCount: 3,
+					Cards:     []int{},
 				})
 			})
 

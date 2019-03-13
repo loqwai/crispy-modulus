@@ -4,24 +4,24 @@ import "fmt"
 
 // Player represents the data of a single player.
 type Player struct {
-	cardCount int
-	state     PlayerState
+	state PlayerState
 }
 
 // PlayerState represents the state of a particular player
 type PlayerState struct {
-	Cards []int
-	Score int
+	CardCount int
+	Cards     []int
+	Score     int
 }
 
 // NewPlayer returns a new Player instance
-func NewPlayer(cardCount int) *Player {
-	// initialHandCount := cardCount / 2
-	// deck := rand.Perm(cardCount)
+func NewPlayer(c int) *Player {
+	// initialHandCount := CardCount / 2
+	// deck := rand.Perm(CardCount)
 	p := &Player{
-		cardCount: cardCount,
 		state: PlayerState{
-			Cards: make([]int, 0),
+			CardCount: c,
+			Cards:     make([]int, 0),
 		},
 	}
 
@@ -34,16 +34,15 @@ func NewPlayer(cardCount int) *Player {
 
 // NewPlayerFromState constructs a new player
 // instance from a player state object
-func NewPlayerFromState(cardCount int, data PlayerState) *Player {
+func NewPlayerFromState(data PlayerState) *Player {
 	return &Player{
-		cardCount: cardCount,
-		state:     data,
+		state: data,
 	}
 }
 
 // Draw draws a card
 func (p *Player) Draw() error {
-	card, err := nextCard(p.cardCount, p.state.Cards)
+	card, err := nextCard(p.state.CardCount, p.state.Cards)
 	if err != nil {
 		return err
 	}
