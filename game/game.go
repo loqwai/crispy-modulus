@@ -23,11 +23,6 @@ type State struct {
 	Players       []PlayerState
 }
 
-// PlayerState represents the state of a particular player
-type PlayerState struct {
-	Cards []int
-}
-
 type _Game struct {
 	state *State
 }

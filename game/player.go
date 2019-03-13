@@ -2,10 +2,16 @@ package game
 
 import "fmt"
 
-//Player represents the data of a single player.
+// Player represents the data of a single player.
 type Player struct {
 	cardCount int
 	state     PlayerState
+}
+
+// PlayerState represents the state of a particular player
+type PlayerState struct {
+	Cards []int
+	Score int
 }
 
 // NewPlayer returns a new Player instance
@@ -54,6 +60,11 @@ func (p *Player) Give(card int) {
 // State returns the state of the player
 func (p *Player) State() PlayerState {
 	return p.state
+}
+
+// Updates the score, etc based on the cards the player has
+func (p *Player) Update() {
+	return
 }
 
 // Steal removes the card from the player's hand

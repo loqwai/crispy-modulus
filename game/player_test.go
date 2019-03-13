@@ -119,4 +119,27 @@ var _ = Describe("Player", func() {
 			})
 		})
 	})
+
+	Describe("Update()", func() {
+		Describe("When the player has no cards", func() {
+			var player *game.Player
+
+			BeforeEach(func() {
+				player = game.NewPlayerFromState(3, game.PlayerState{
+					Cards: []int{},
+				})
+			})
+
+			Describe("When called", func() {
+				BeforeEach(func() {
+					player.Update()
+				})
+
+				It("Adds the negative card value to the player's hand", func() {
+					s := player.State().Score
+					Expect(s).To(Equal(0))
+				})
+			})
+		})
+	})
 })
