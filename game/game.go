@@ -102,13 +102,14 @@ func nextCard(modulus int, hand []int) (int, error) {
 }
 
 func (g *_Game) Draw() error {
-	currentPlayer := g.state.Players[g.state.CurrentPlayer]
-	card, err := nextCard(g.state.CardCount, currentPlayer.MyCards)
+	player := NewPlayerFromState(g.state.CardCount, g.state.Players[g.state.CurrentPlayer])
+	err := player.Draw()
 	if err != nil {
 		return err
 	}
 
-	g.state.Players[g.state.CurrentPlayer].MyCards = append(currentPlayer.MyCards, card)
+	g.state.Players[g.state.CurrentPlayer] = player.State()
+
 	g.state.CurrentPlayer = (g.state.CurrentPlayer + 1) % len(g.state.Players)
 	return nil
 }
@@ -138,11 +139,12 @@ func NewPlayer(cardCount int) *Player {
 	return p
 }
 
-// NewPlayerFromData constructs a new player
-// instance from a player data object
-func NewPlayerFromData(data PlayerState) *Player {
+// NewPlayerFromState constructs a new player
+// instance from a player state object
+func NewPlayerFromState(cardCount int, data PlayerState) *Player {
 	return &Player{
-		state: data,
+		cardCount: cardCount,
+		state:     data,
 	}
 }
 
