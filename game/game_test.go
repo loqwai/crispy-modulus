@@ -186,6 +186,10 @@ var _ = Describe("Game", func() {
 						cards := g.State().Players[1].Cards
 						Expect(cards).To(Equal([]int{2}))
 					})
+
+					Describe("When the second player Draw()s until it has no cards left", func() {
+						// BeforeEach
+					})
 				})
 			})
 		})
