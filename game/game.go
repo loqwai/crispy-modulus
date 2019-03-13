@@ -47,17 +47,12 @@ func (g *_Game) State() State {
 
 func (g *_Game) ComputeFirstPlayer() {
 	currentPlayer := 0
-	maxMod := 0
+	maxScore := 0
 
 	for i, p := range g.state.Players {
-		sum := 0
-		for _, c := range p.Cards {
-			sum += c
-		}
-
-		mod := sum % g.state.CardCount
-		if mod > maxMod {
-			maxMod = mod
+		score := ScoreHand(p.Cards, g.state.CardCount)
+		if score > maxScore {
+			maxScore = score
 			currentPlayer = i
 		}
 	}

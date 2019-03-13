@@ -61,9 +61,24 @@ func (p *Player) State() PlayerState {
 	return p.state
 }
 
-// Updates the score, etc based on the cards the player has
+// Update updates the score, etc based on the cards the player has
 func (p *Player) Update() {
+	if len(p.state.Cards) == 0 {
+		p.state.Score = 0
+		return
+	}
+	p.state.Score = p.state.Cards[0]
 	return
+}
+
+//ScoreHand finds the...score...of a...hand.
+func ScoreHand(cards []int, modulus int) int {
+	sum := 0
+	for _, c := range cards {
+		sum += c
+	}
+
+	return sum % modulus
 }
 
 // Steal removes the card from the player's hand

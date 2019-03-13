@@ -138,19 +138,19 @@ var _ = Describe("Player", func() {
 					player.Update()
 				})
 
-				It("Adds the negative card value to the player's hand", func() {
+				It("Should calculate the player's score to be 0", func() {
 					s := player.State().Score
 					Expect(s).To(Equal(0))
 				})
 			})
 		})
-		Describe("When the player 1 card, and it's a 4", func() {
+		Describe("When the player has 1 card, and it's a 2", func() {
 			var player *game.Player
 
 			BeforeEach(func() {
 				player = game.NewPlayerFromState(game.PlayerState{
 					CardCount: 3,
-					Cards:     []int{},
+					Cards:     []int{2},
 				})
 			})
 
@@ -159,9 +159,9 @@ var _ = Describe("Player", func() {
 					player.Update()
 				})
 
-				It("Adds the negative card value to the player's hand", func() {
+				It("Should calculate the player's score to be 2", func() {
 					s := player.State().Score
-					Expect(s).To(Equal(0))
+					Expect(s).To(Equal(2))
 				})
 			})
 		})
