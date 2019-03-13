@@ -9,8 +9,7 @@ import (
 type Game interface {
 	// Start()
 	ComputeFirstPlayer()
-	// TODO: Rename to State()
-	GetState() State
+	State() State
 	SetState(state State)
 	Start() error
 	Steal(card int) error
@@ -48,7 +47,7 @@ func New(cardCount int) Game {
 	}
 }
 
-func (g *_Game) GetState() State {
+func (g *_Game) State() State {
 	return *g.state
 }
 

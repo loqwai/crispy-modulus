@@ -36,16 +36,16 @@ var _ = Describe("game", func() {
 		})
 
 		It("Should instantiate 2 players by default", func() {
-			players := g.GetState().Players
+			players := g.State().Players
 			Expect(len(players)).To(Equal(2))
 		})
 
 		It("Should be the player with the greatest modulus's turn", func() {
-			Expect(g.GetState().CurrentPlayer).To(Equal(0))
+			Expect(g.State().CurrentPlayer).To(Equal(0))
 		})
 
 		It("Should give both players empty hands", func() {
-			Expect(g.GetState().Players[0].MyCards).To(HaveLen(0))
+			Expect(g.State().Players[0].MyCards).To(HaveLen(0))
 		})
 
 		Describe("ComputeFirstPlayer()()", func() {
@@ -63,7 +63,7 @@ var _ = Describe("game", func() {
 				})
 
 				It("Should be the second player's turn", func() {
-					Expect(g.GetState().CurrentPlayer).To(Equal(1))
+					Expect(g.State().CurrentPlayer).To(Equal(1))
 				})
 			})
 		})
@@ -76,11 +76,11 @@ var _ = Describe("game", func() {
 				})
 
 				It("Should give player 1 1 card", func() {
-					Expect(g.GetState().Players[0].MyCards).To(HaveLen(1))
+					Expect(g.State().Players[0].MyCards).To(HaveLen(1))
 				})
 
 				It("Should give player 2 1 card", func() {
-					Expect(g.GetState().Players[1].MyCards).To(HaveLen(1))
+					Expect(g.State().Players[1].MyCards).To(HaveLen(1))
 				})
 			})
 		})
@@ -99,7 +99,7 @@ var _ = Describe("game", func() {
 				})
 
 				It("Should not set player 2 to be the current player (in case we are restoring a saved game)", func() {
-					Expect(g.GetState().CurrentPlayer).To(Equal(0))
+					Expect(g.State().CurrentPlayer).To(Equal(0))
 				})
 			})
 
@@ -111,7 +111,7 @@ var _ = Describe("game", func() {
 			BeforeEach(func() {
 				g.Start()
 				g.Draw()
-				s = g.GetState()
+				s = g.State()
 			})
 
 			It("Should add a card to the current player's hand", func() {
@@ -144,7 +144,7 @@ var _ = Describe("game", func() {
 				})
 
 				It("should be the other player's turn now", func() {
-					Expect(g.GetState().CurrentPlayer).To(Equal(0))
+					Expect(g.State().CurrentPlayer).To(Equal(0))
 				})
 
 				It("should have a sane hand", func() {
@@ -196,12 +196,12 @@ var _ = Describe("game", func() {
 						})
 
 						It("Should add the negative card to the first player's cards", func() {
-							cards := g.GetState().Players[0].MyCards
+							cards := g.State().Players[0].MyCards
 							Expect(cards).To(Equal([]int{1, 2, -3}))
 						})
 
 						It("Should remove the card from the second player's cards", func() {
-							cards := g.GetState().Players[1].MyCards
+							cards := g.State().Players[1].MyCards
 							Expect(cards).To(Equal([]int{2}))
 						})
 					})
