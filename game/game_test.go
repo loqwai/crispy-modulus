@@ -1,6 +1,7 @@
 package game_test
 
 import (
+	"fmt"
 	"math/rand"
 
 	. "github.com/onsi/ginkgo"
@@ -15,6 +16,7 @@ var _ = Describe("Game", func() {
 	BeforeEach(func() {
 		rand.Seed(0)
 		g = game.New(3)
+		fmt.Println(g)
 	})
 
 	It("Should instantiate 2 players by default", func() {
@@ -37,8 +39,14 @@ var _ = Describe("Game", func() {
 					CurrentPlayer: 0,
 					CardCount:     3,
 					Players: []game.PlayerState{
-						game.PlayerState{Cards: []int{3}},
-						game.PlayerState{Cards: []int{1}},
+						game.PlayerState{
+							Cards: []int{3},
+							Deck:  []int{1, 2},
+						},
+						game.PlayerState{
+							Cards: []int{1},
+							Deck:  []int{2, 3},
+						},
 					},
 				})
 				g.ComputeFirstPlayer()
@@ -74,8 +82,14 @@ var _ = Describe("Game", func() {
 					CurrentPlayer: 0,
 					CardCount:     3,
 					Players: []game.PlayerState{
-						game.PlayerState{Cards: []int{3}},
-						game.PlayerState{Cards: []int{1}},
+						game.PlayerState{
+							Cards: []int{3},
+							Deck:  []int{1, 2},
+						},
+						game.PlayerState{
+							Cards: []int{1},
+							Deck:  []int{2, 3},
+						},
 					},
 				})
 			})
@@ -84,7 +98,6 @@ var _ = Describe("Game", func() {
 				Expect(g.State().CurrentPlayer).To(Equal(0))
 			})
 		})
-
 	})
 
 	Describe("Draw()", func() {
@@ -108,7 +121,7 @@ var _ = Describe("Game", func() {
 			Expect(s.CurrentPlayer).To(Equal(1))
 		})
 
-		It("Should populate the hand with numbers between 1-5", func() {
+		FIt("Should populate the hand with numbers between 1-5", func() {
 			p := s.Players[0]
 			for i := 0; i < 2; i++ {
 				Expect(p.Cards[i]).To(BeNumerically(">=", 1))
@@ -140,8 +153,14 @@ var _ = Describe("Game", func() {
 				g.SetState(game.State{
 					CardCount: 3,
 					Players: []game.PlayerState{
-						game.PlayerState{Cards: []int{1, 2, 3}},
-						game.PlayerState{Cards: []int{1, 2, 3}},
+						game.PlayerState{
+							Cards: []int{1, 2, 3},
+							Deck:  []int{},
+						},
+						game.PlayerState{
+							Cards: []int{1, 2, 3},
+							Deck:  []int{},
+						},
 					},
 				})
 				err = g.Draw()
@@ -155,17 +174,44 @@ var _ = Describe("Game", func() {
 				Expect(s.Players[1].Cards).To(BeASaneHand())
 			})
 		})
-	})
+		Describe("when Draw is called and there are no cards to draw", func() {
+			var err error
 
-	Describe("Steal()", func() {
-		Describe("When both players have two cards each", func() {
 			BeforeEach(func() {
 				g.SetState(game.State{
 					CardCount:     3,
 					CurrentPlayer: 0,
 					Players: []game.PlayerState{
-						game.PlayerState{Cards: []int{1, 2}},
-						game.PlayerState{Cards: []int{2, 3}},
+						game.PlayerState{
+							CardCount: 3,
+							Cards:     []int{2, 3},
+							Deck:      []int{},
+						}},
+				})
+				err = g.Draw()
+			})
+
+			It("should be the other player's turn now", func() {
+				Expect(err).To(HaveOccurred())
+			})
+		})
+	})
+
+	Describe("Steal()", func() {
+		Describe("When both players have one card each", func() {
+			BeforeEach(func() {
+				g.SetState(game.State{
+					CardCount:     3,
+					CurrentPlayer: 0,
+					Players: []game.PlayerState{
+						game.PlayerState{
+							Cards: []int{2},
+							Deck:  []int{1, 3},
+						},
+						game.PlayerState{
+							Cards: []int{1},
+							Deck:  []int{2, 3},
+						},
 					},
 				})
 			})
@@ -173,22 +219,18 @@ var _ = Describe("Game", func() {
 			Describe("When it's the first player's turn", func() {
 				Describe("When the first player steals a card", func() {
 					BeforeEach(func() {
-						err := g.Steal(3)
+						err := g.Steal(1)
 						Expect(err).NotTo(HaveOccurred())
 					})
 
 					It("Should add the negative card to the first player's cards", func() {
 						cards := g.State().Players[0].Cards
-						Expect(cards).To(Equal([]int{1, 2, -3}))
+						Expect(cards).To(Equal([]int{2, -1}))
 					})
 
 					It("Should remove the card from the second player's cards", func() {
 						cards := g.State().Players[1].Cards
-						Expect(cards).To(Equal([]int{2}))
-					})
-
-					Describe("When the second player Draw()s until it has no cards left", func() {
-						// BeforeEach
+						Expect(cards).To(Equal([]int{}))
 					})
 				})
 			})

@@ -1,10 +1,5 @@
 package game
 
-import (
-	"fmt"
-	"math/rand"
-)
-
 // Game represents an instance of the game
 type Game interface {
 	// Start()
@@ -75,20 +70,6 @@ func (g *_Game) String() string {
   Player1 | 2 3 4 |       1 5 |     9 |       4 |
   Player2 | 1 4 5 |       2 3 |    10 |       0 |
 	`
-}
-
-func nextCard(modulus int, hand []int) (int, error) {
-	if len(hand) >= modulus {
-		return 0, fmt.Errorf("no next card")
-	}
-
-	card := 0
-	for {
-		card = rand.Intn(modulus) + 1
-		if !contains(hand, card) {
-			return card, nil
-		}
-	}
 }
 
 func (g *_Game) Draw() error {

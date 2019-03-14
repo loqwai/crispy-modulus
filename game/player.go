@@ -1,6 +1,9 @@
 package game
 
-import "fmt"
+import (
+	"fmt"
+	"math/rand"
+)
 
 // Player represents the data of a single player.
 type Player struct {
@@ -11,17 +14,24 @@ type Player struct {
 type PlayerState struct {
 	CardCount int
 	Cards     []int
+	Deck      []int
 	Score     int
 }
 
 // NewPlayer returns a new Player instance
-func NewPlayer(c int) *Player {
+func NewPlayer(cardCount int) *Player {
 	// initialHandCount := CardCount / 2
-	// deck := rand.Perm(CardCount)
+	deck := make([]int, cardCount, cardCount)
+
+	for i := 1; i <= cardCount; i++ {
+		deck[i] = i
+	}
+
 	p := &Player{
 		state: PlayerState{
-			CardCount: c,
-			Cards:     make([]int, 0),
+			CardCount: cardCount,
+			Cards:     []int{},
+			Deck:      deck,
 		},
 	}
 
@@ -34,15 +44,15 @@ func NewPlayer(c int) *Player {
 
 // NewPlayerFromState constructs a new player
 // instance from a player state object
-func NewPlayerFromState(data PlayerState) *Player {
+func NewPlayerFromState(state PlayerState) *Player {
 	return &Player{
-		state: data,
+		state: state,
 	}
 }
 
 // Draw draws a card
 func (p *Player) Draw() error {
-	card, err := nextCard(p.state.CardCount, p.state.Cards)
+	card, err := nextCard(p.state.Deck)
 	if err != nil {
 		return err
 	}
@@ -99,4 +109,13 @@ func (p *Player) Steal(card int) error {
 		}
 	}
 	return fmt.Errorf("Card %v not found in hand: %v", card, p.state.Cards)
+}
+
+func nextCard(deck []int) (int, error) {
+	if len(deck) == 0 {
+		return 0, fmt.Errorf("no next card")
+	}
+
+	i := rand.Intn(len(deck))
+	return deck[i], nil
 }

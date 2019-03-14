@@ -23,8 +23,12 @@ var _ = Describe("Player", func() {
 			state = player.State()
 		})
 
-		It("Should instantiate a player with 0 cards by default", func() {
-			Expect(len(state.Cards)).To(Equal(0))
+		FIt("Should instantiate a player with 0 cards by default", func() {
+			Expect(state.Cards).To(HaveLen(0))
+		})
+
+		It("Should have a deck of 5 cards", func() {
+			Expect(state.Deck).To(HaveLen(5))
 		})
 	})
 
@@ -69,6 +73,7 @@ var _ = Describe("Player", func() {
 				player = game.NewPlayerFromState(game.PlayerState{
 					CardCount: 3,
 					Cards:     []int{1},
+					Deck:      []int{},
 				})
 			})
 
