@@ -19,11 +19,11 @@ var _ = Describe("Player", func() {
 		var state game.PlayerState
 
 		BeforeEach(func() {
-			player = game.NewPlayer(5)
+			player = game.NewPlayer(5) // stack trace
 			state = player.State()
 		})
 
-		FIt("Should instantiate a player with 0 cards by default", func() {
+		It("Should instantiate a player with 0 cards by default", func() {
 			Expect(state.Cards).To(HaveLen(0))
 		})
 

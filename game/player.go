@@ -21,10 +21,10 @@ type PlayerState struct {
 // NewPlayer returns a new Player instance
 func NewPlayer(cardCount int) *Player {
 	// initialHandCount := CardCount / 2
-	deck := make([]int, cardCount, cardCount)
+	deck := []int{}
 
 	for i := 1; i <= cardCount; i++ {
-		deck[i] = i
+		deck = append(deck, i)
 	}
 
 	p := &Player{

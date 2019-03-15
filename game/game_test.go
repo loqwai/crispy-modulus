@@ -1,7 +1,6 @@
 package game_test
 
 import (
-	"fmt"
 	"math/rand"
 
 	. "github.com/onsi/ginkgo"
@@ -16,7 +15,6 @@ var _ = Describe("Game", func() {
 	BeforeEach(func() {
 		rand.Seed(0)
 		g = game.New(3)
-		fmt.Println(g)
 	})
 
 	It("Should instantiate 2 players by default", func() {
@@ -121,7 +119,7 @@ var _ = Describe("Game", func() {
 			Expect(s.CurrentPlayer).To(Equal(1))
 		})
 
-		FIt("Should populate the hand with numbers between 1-5", func() {
+		It("Should populate the hand with numbers between 1-5", func() {
 			p := s.Players[0]
 			for i := 0; i < 2; i++ {
 				Expect(p.Cards[i]).To(BeNumerically(">=", 1))
