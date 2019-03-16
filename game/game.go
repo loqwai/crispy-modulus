@@ -149,17 +149,24 @@ func (g *_Game) WhoIsWinning() int {
 			continue
 		}
 
-		if mod <= bestPlayer.mod || multiple <= bestPlayer.multiple {
-			if p.RemainingCardCount() == 0 {
-				continue
-			}
-
+		if mod < bestPlayer.mod {
 			bestPlayer.index = i
 			bestPlayer.mod = mod
 			bestPlayer.multiple = multiple
 			continue
 		}
 
+		//ties
+		if p.RemainingCardCount() == 0 {
+			continue
+		}
+
+		if multiple <= bestPlayer.multiple {
+			bestPlayer.index = i
+			bestPlayer.mod = mod
+			bestPlayer.multiple = multiple
+			continue
+		}
 	}
 
 	if g.players[bestPlayer.index].Sum() >= 0 {
