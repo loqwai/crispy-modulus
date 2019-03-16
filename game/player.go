@@ -14,9 +14,8 @@ type Player struct {
 
 // PlayerState represents the state of a particular player
 type PlayerState struct {
-	Hand  []int
-	Deck  []int
-	Score int
+	Hand []int
+	Deck []int
 }
 
 // NewPlayer returns a new Player instance
@@ -68,9 +67,8 @@ func (p *Player) Give(card int) {
 // State returns the state of the player
 func (p *Player) State() PlayerState {
 	return PlayerState{
-		Deck:  p.deck,
-		Hand:  p.hand,
-		Score: p.Score(),
+		Deck: p.deck,
+		Hand: p.hand,
 	}
 }
 
