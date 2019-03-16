@@ -7,6 +7,7 @@ type Game interface {
 	State() State
 	SetState(state State)
 	Start() error
+	String() string
 	Steal(card int) error
 	Draw() error
 }
@@ -23,14 +24,14 @@ type _Game struct {
 }
 
 // New returns a new Game instance
-func New(CardCount int) Game {
+func New(cardCount int) Game {
 	return &_Game{
 		state: &State{
-			CardCount:     CardCount,
+			CardCount:     cardCount,
 			CurrentPlayer: 0,
 			Players: []PlayerState{
-				NewPlayer(CardCount).State(),
-				NewPlayer(CardCount).State(),
+				NewPlayer(cardCount).State(),
+				NewPlayer(cardCount).State(),
 			},
 		},
 	}
@@ -101,13 +102,4 @@ func (g *_Game) Steal(card int) error {
 
 	g.state.CurrentPlayer = (g.state.CurrentPlayer + 1) % len(g.state.Players)
 	return nil
-}
-
-func contains(s []int, e int) bool {
-	for _, a := range s {
-		if a == e {
-			return true
-		}
-	}
-	return false
 }

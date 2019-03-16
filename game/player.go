@@ -20,7 +20,6 @@ type PlayerState struct {
 
 // NewPlayer returns a new Player instance
 func NewPlayer(cardCount int) *Player {
-	// initialHandCount := CardCount / 2
 	deck := []int{}
 
 	for i := 1; i <= cardCount; i++ {
@@ -34,10 +33,6 @@ func NewPlayer(cardCount int) *Player {
 			Deck:      deck,
 		},
 	}
-
-	// for i := 0; i < initialHandCount; i++ {
-	// 	p.Cards[i] = deck[i] + 1
-	// }
 
 	return p
 }
@@ -56,7 +51,10 @@ func (p *Player) Draw() error {
 	if err != nil {
 		return err
 	}
-
+	p.state.Deck, err = removeCard(p.state.Deck, card)
+	if err != nil {
+		return err
+	}
 	p.state.Cards = append(p.state.Cards, card)
 	return nil
 }
@@ -102,13 +100,18 @@ func ScoreHand(cards []int, modulus int) int {
 
 // Steal removes the card from the player's hand
 func (p *Player) Steal(card int) error {
-	for i, c := range p.state.Cards {
+	var err error
+	p.state.Cards, err = removeCard(p.state.Cards, card)
+	return err
+}
+
+func removeCard(cards []int, card int) ([]int, error) {
+	for i, c := range cards {
 		if c == card {
-			p.state.Cards = append(p.state.Cards[:i], p.state.Cards[i+1:]...)
-			return nil
+			return append(cards[:i], cards[i+1:]...), nil
 		}
 	}
-	return fmt.Errorf("Card %v not found in hand: %v", card, p.state.Cards)
+	return nil, fmt.Errorf("Card %v not found in hand: %v", card, cards)
 }
 
 func nextCard(deck []int) (int, error) {

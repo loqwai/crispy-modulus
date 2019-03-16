@@ -6,7 +6,7 @@ import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 
-	"github.com/loqwai/crispy-modulus/game"
+	. "github.com/loqwai/crispy-modulus/game"
 )
 
 var _ = Describe("Player", func() {
@@ -15,11 +15,11 @@ var _ = Describe("Player", func() {
 	})
 
 	Describe("NewPlayer", func() {
-		var player *game.Player
-		var state game.PlayerState
+		var player *Player
+		var state PlayerState
 
 		BeforeEach(func() {
-			player = game.NewPlayer(5) // stack trace
+			player = NewPlayer(5)
 			state = player.State()
 		})
 
@@ -34,43 +34,44 @@ var _ = Describe("Player", func() {
 
 	Describe("Draw()", func() {
 		Describe("When called", func() {
-			var state game.PlayerState
+			var state PlayerState
+			var player *Player
 
 			BeforeEach(func() {
-				player := game.NewPlayer(5)
+				player = NewPlayerFromState(PlayerState{
+					CardCount: 1,
+					Cards:     []int{},
+					Deck:      []int{1},
+				})
 				err := player.Draw()
 				Expect(err).NotTo(HaveOccurred())
 				state = player.State()
 			})
 
 			It("Should populate the hand with numbers between 1-5", func() {
-				Expect(state.Cards[0]).To(BeNumerically(">=", 1))
-			})
-		})
-
-		Describe("When called 100 times", func() {
-			var states []game.PlayerState
-
-			BeforeEach(func() {
-				for i := 0; i < 100; i++ {
-					states = append(states, game.NewPlayer(5).State())
-				}
+				Expect(state.Cards[0]).To(Equal(1))
 			})
 
-			It("Should not populate the hand with the same card twice", func() {
-				for _, s := range states {
-					Expect(s.Cards).To(BeASaneHand())
-				}
+			Describe("When called called a second time", func() {
+				var err error
+
+				BeforeEach(func() {
+					err = player.Draw()
+				})
+
+				It("Should return an error cause the deck is empty", func() {
+					Expect(err).To(HaveOccurred())
+				})
 			})
 		})
 	})
 
 	Describe("Steal()", func() {
 		Describe("When a player has a 1", func() {
-			var player *game.Player
+			var player *Player
 
 			BeforeEach(func() {
-				player = game.NewPlayerFromState(game.PlayerState{
+				player = NewPlayerFromState(PlayerState{
 					CardCount: 3,
 					Cards:     []int{1},
 					Deck:      []int{},
@@ -105,10 +106,10 @@ var _ = Describe("Player", func() {
 
 	Describe("Give()", func() {
 		Describe("When the player has no cards", func() {
-			var player *game.Player
+			var player *Player
 
 			BeforeEach(func() {
-				player = game.NewPlayerFromState(game.PlayerState{
+				player = NewPlayerFromState(PlayerState{
 					CardCount: 3,
 					Cards:     []int{},
 				})
@@ -129,10 +130,10 @@ var _ = Describe("Player", func() {
 
 	Describe("Update()", func() {
 		Describe("When the player has no cards", func() {
-			var player *game.Player
+			var player *Player
 
 			BeforeEach(func() {
-				player = game.NewPlayerFromState(game.PlayerState{
+				player = NewPlayerFromState(PlayerState{
 					CardCount: 3,
 					Cards:     []int{},
 				})
@@ -146,10 +147,10 @@ var _ = Describe("Player", func() {
 		})
 
 		Describe("When the player has 1 card, a 2", func() {
-			var player *game.Player
+			var player *Player
 
 			BeforeEach(func() {
-				player = game.NewPlayerFromState(game.PlayerState{
+				player = NewPlayerFromState(PlayerState{
 					CardCount: 3,
 					Cards:     []int{2},
 				})
@@ -163,10 +164,10 @@ var _ = Describe("Player", func() {
 		})
 
 		Describe("When the player has 2 cards, a 1 and a 2", func() {
-			var player *game.Player
+			var player *Player
 
 			BeforeEach(func() {
-				player = game.NewPlayerFromState(game.PlayerState{
+				player = NewPlayerFromState(PlayerState{
 					CardCount: 3,
 					Cards:     []int{1, 2},
 				})
@@ -180,10 +181,10 @@ var _ = Describe("Player", func() {
 		})
 
 		Describe("When the player has 2 stolen cards, -1 and -2", func() {
-			var player *game.Player
+			var player *Player
 
 			BeforeEach(func() {
-				player = game.NewPlayerFromState(game.PlayerState{
+				player = NewPlayerFromState(PlayerState{
 					CardCount: 3,
 					Cards:     []int{-1, -2},
 				})
