@@ -38,10 +38,9 @@ var _ = Describe("Player", func() {
 			var player *Player
 
 			BeforeEach(func() {
-				player = NewPlayerFromState(PlayerState{
-					CardCount: 1,
-					Hand:      []int{},
-					Deck:      []int{1},
+				player = NewPlayerFromState(1, PlayerState{
+					Hand: []int{},
+					Deck: []int{1},
 				})
 				err := player.Draw()
 				Expect(err).NotTo(HaveOccurred())
@@ -71,10 +70,9 @@ var _ = Describe("Player", func() {
 			var player *Player
 
 			BeforeEach(func() {
-				player = NewPlayerFromState(PlayerState{
-					CardCount: 3,
-					Hand:      []int{1},
-					Deck:      []int{},
+				player = NewPlayerFromState(3, PlayerState{
+					Hand: []int{1},
+					Deck: []int{},
 				})
 			})
 
@@ -115,9 +113,9 @@ var _ = Describe("Player", func() {
 			var player *Player
 
 			BeforeEach(func() {
-				player = NewPlayerFromState(PlayerState{
-					CardCount: 3,
-					Hand:      []int{},
+				player = NewPlayerFromState(3, PlayerState{
+					Hand: []int{},
+					Deck: []int{},
 				})
 			})
 
@@ -140,9 +138,9 @@ var _ = Describe("Player", func() {
 			var score int
 
 			BeforeEach(func() {
-				player = NewPlayerFromState(PlayerState{
-					CardCount: 3,
-					Hand:      []int{},
+				player = NewPlayerFromState(3, PlayerState{
+					Deck: []int{},
+					Hand: []int{},
 				})
 				score = player.Score()
 			})
@@ -155,10 +153,11 @@ var _ = Describe("Player", func() {
 		Describe("When the player has 1 card, a 2", func() {
 			var player *Player
 			var score int
+
 			BeforeEach(func() {
-				player = NewPlayerFromState(PlayerState{
-					CardCount: 3,
-					Hand:      []int{2},
+				player = NewPlayerFromState(3, PlayerState{
+					Deck: []int{},
+					Hand: []int{2},
 				})
 				score = player.Score()
 			})
@@ -173,9 +172,9 @@ var _ = Describe("Player", func() {
 			var player *Player
 
 			BeforeEach(func() {
-				player = NewPlayerFromState(PlayerState{
-					CardCount: 3,
-					Hand:      []int{1, 2},
+				player = NewPlayerFromState(3, PlayerState{
+					Deck: []int{},
+					Hand: []int{1, 2},
 				})
 				score = player.Score()
 			})
@@ -190,9 +189,9 @@ var _ = Describe("Player", func() {
 			var player *Player
 
 			BeforeEach(func() {
-				player = NewPlayerFromState(PlayerState{
-					CardCount: 3,
-					Hand:      []int{-1, -2},
+				player = NewPlayerFromState(2, PlayerState{
+					Deck: []int{},
+					Hand: []int{-1, -2},
 				})
 				score = player.Score()
 			})

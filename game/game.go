@@ -73,7 +73,7 @@ func (g *_Game) SetState(state State) {
 	g.currentPlayer = state.CurrentPlayer
 	g.players = make([]*Player, len(state.Players))
 	for i, p := range state.Players {
-		g.players[i] = NewPlayerFromState(p)
+		g.players[i] = NewPlayerFromState(state.CardCount, p)
 	}
 }
 

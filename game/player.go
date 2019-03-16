@@ -14,10 +14,9 @@ type Player struct {
 
 // PlayerState represents the state of a particular player
 type PlayerState struct {
-	CardCount int
-	Hand      []int
-	Deck      []int
-	Score     int
+	Hand  []int
+	Deck  []int
+	Score int
 }
 
 // NewPlayer returns a new Player instance
@@ -39,9 +38,9 @@ func NewPlayer(cardCount int) *Player {
 
 // NewPlayerFromState constructs a new player
 // instance from a player state object
-func NewPlayerFromState(state PlayerState) *Player {
+func NewPlayerFromState(cardCount int, state PlayerState) *Player {
 	return &Player{
-		cardCount: state.CardCount,
+		cardCount: cardCount,
 		deck:      state.Deck,
 		hand:      state.Hand,
 	}

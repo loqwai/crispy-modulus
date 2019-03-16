@@ -38,14 +38,12 @@ var _ = Describe("Game", func() {
 					CardCount:     3,
 					Players: []game.PlayerState{
 						game.PlayerState{
-							CardCount: 3,
-							Hand:      []int{3},
-							Deck:      []int{1, 2},
+							Hand: []int{3},
+							Deck: []int{1, 2},
 						},
 						game.PlayerState{
-							CardCount: 3,
-							Hand:      []int{1},
-							Deck:      []int{2, 3},
+							Hand: []int{1},
+							Deck: []int{2, 3},
 						},
 					},
 				})
@@ -91,14 +89,12 @@ var _ = Describe("Game", func() {
 					CardCount:     3,
 					Players: []game.PlayerState{
 						game.PlayerState{
-							CardCount: 3,
-							Hand:      []int{3},
-							Deck:      []int{1, 2},
+							Hand: []int{3},
+							Deck: []int{1, 2},
 						},
 						game.PlayerState{
-							CardCount: 3,
-							Hand:      []int{1},
-							Deck:      []int{2, 3},
+							Hand: []int{1},
+							Deck: []int{2, 3},
 						},
 					},
 				})
@@ -164,14 +160,12 @@ var _ = Describe("Game", func() {
 					CardCount: 3,
 					Players: []game.PlayerState{
 						game.PlayerState{
-							CardCount: 3,
-							Hand:      []int{1, 2, 3},
-							Deck:      []int{},
+							Hand: []int{1, 2, 3},
+							Deck: []int{},
 						},
 						game.PlayerState{
-							CardCount: 3,
-							Hand:      []int{1, 2, 3},
-							Deck:      []int{},
+							Hand: []int{1, 2, 3},
+							Deck: []int{},
 						},
 					},
 				})
@@ -186,6 +180,7 @@ var _ = Describe("Game", func() {
 				Expect(s.Players[1].Hand).To(BeASaneHand())
 			})
 		})
+
 		Describe("when Draw is called and there are no cards to draw", func() {
 			var err error
 
@@ -195,9 +190,8 @@ var _ = Describe("Game", func() {
 					CurrentPlayer: 0,
 					Players: []game.PlayerState{
 						game.PlayerState{
-							CardCount: 3,
-							Hand:      []int{2, 3},
-							Deck:      []int{},
+							Hand: []int{2, 3},
+							Deck: []int{},
 						}},
 				})
 				err = g.Draw()
@@ -219,14 +213,12 @@ var _ = Describe("Game", func() {
 					CurrentPlayer: 0,
 					Players: []game.PlayerState{
 						game.PlayerState{
-							CardCount: 2,
-							Hand:      []int{1},
-							Deck:      []int{2},
+							Hand: []int{1},
+							Deck: []int{2},
 						},
 						game.PlayerState{
-							CardCount: 2,
-							Hand:      []int{2},
-							Deck:      []int{1},
+							Hand: []int{2},
+							Deck: []int{1},
 						},
 					},
 				})
@@ -234,7 +226,7 @@ var _ = Describe("Game", func() {
 				isDone = g.IsDone()
 			})
 
-			It("Should return true", func() {
+			It("Should return false", func() {
 				Expect(isDone).To(BeFalse())
 			})
 		})
@@ -248,14 +240,12 @@ var _ = Describe("Game", func() {
 					CurrentPlayer: 0,
 					Players: []game.PlayerState{
 						game.PlayerState{
-							CardCount: 1,
-							Hand:      []int{1},
-							Deck:      []int{},
+							Hand: []int{1},
+							Deck: []int{},
 						},
 						game.PlayerState{
-							CardCount: 1,
-							Hand:      []int{1},
-							Deck:      []int{},
+							Hand: []int{1},
+							Deck: []int{},
 						},
 					},
 				})
@@ -277,14 +267,12 @@ var _ = Describe("Game", func() {
 					CurrentPlayer: 0,
 					Players: []game.PlayerState{
 						game.PlayerState{
-							CardCount: 3,
-							Hand:      []int{2},
-							Deck:      []int{1, 3},
+							Hand: []int{2},
+							Deck: []int{1, 3},
 						},
 						game.PlayerState{
-							CardCount: 3,
-							Hand:      []int{1},
-							Deck:      []int{2, 3},
+							Hand: []int{1},
+							Deck: []int{2, 3},
 						},
 					},
 				})
