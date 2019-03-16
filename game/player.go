@@ -88,27 +88,19 @@ func (p *Player) RemainingCardCount() int {
 	return len(p.deck)
 }
 
-// func scoreHand(cards []int, modulus int) int {
-// 	mySum := 0
-// 	theirSum := 0
-// 	for _, c := range cards {
-// 		if c < 0 {
-// 			theirSum += c
-// 			continue
-// 		}
-// 		mySum += c
-// 	}
-
-// 	if -1*theirSum > mySum {
-// 		return mySum + theirSum
-// 	}
-
-// 	return (mySum - theirSum) % modulus
-// }
-
 // Steal removes the card from the player's hand
 func (p *Player) Steal(card int) error {
 	var err error
+	if card < 1 {
+		return fmt.Errorf("No takeseys backseys")
+	}
+
+	for _, c := range p.hand {
+		if c == -1*card {
+			return fmt.Errorf("Card %v is locked", card)
+		}
+	}
+
 	cards, err := removeCard(p.hand, card)
 	if err != nil {
 		return err

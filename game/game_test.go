@@ -459,5 +459,44 @@ var _ = Describe("Game", func() {
 				})
 			})
 		})
+		Describe("When p2 has a 'locked' card", func() {
+			BeforeEach(func() {
+				g.SetState(game.State{
+					CardCount:     3,
+					CurrentPlayer: 0,
+					Players: []game.PlayerState{
+						game.PlayerState{
+							Hand: []int{},
+							Deck: []int{2, 3},
+						},
+						game.PlayerState{
+							Hand: []int{1, -1},
+							Deck: []int{2, 3},
+						},
+					},
+				})
+			})
+
+			Describe("When p1 tries to steal a negative card", func() {
+				var err error
+				BeforeEach(func() {
+					err = g.Steal(-1)
+				})
+
+				It("Should throw an error", func() {
+					Expect(err).To(HaveOccurred())
+				})
+			})
+			Describe("When p1 tries to steal a 'locked' card", func() {
+				var err error
+				BeforeEach(func() {
+					err = g.Steal(1)
+				})
+
+				It("Should throw an error", func() {
+					Expect(err).To(HaveOccurred())
+				})
+			})
+		})
 	})
 })
