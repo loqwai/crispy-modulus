@@ -24,7 +24,7 @@ var _ = Describe("Player", func() {
 		})
 
 		It("Should instantiate a player with 0 cards by default", func() {
-			Expect(state.Cards).To(HaveLen(0))
+			Expect(state.Hand).To(HaveLen(0))
 		})
 
 		It("Should have a deck of 5 cards", func() {
@@ -40,7 +40,7 @@ var _ = Describe("Player", func() {
 			BeforeEach(func() {
 				player = NewPlayerFromState(PlayerState{
 					CardCount: 1,
-					Cards:     []int{},
+					Hand:     []int{},
 					Deck:      []int{1},
 				})
 				err := player.Draw()
@@ -49,7 +49,7 @@ var _ = Describe("Player", func() {
 			})
 
 			It("Should populate the hand with numbers between 1-5", func() {
-				Expect(state.Cards[0]).To(Equal(1))
+				Expect(state.Hand[0]).To(Equal(1))
 			})
 
 			Describe("When called called a second time", func() {
@@ -73,7 +73,7 @@ var _ = Describe("Player", func() {
 			BeforeEach(func() {
 				player = NewPlayerFromState(PlayerState{
 					CardCount: 3,
-					Cards:     []int{1},
+					Hand:     []int{1},
 					Deck:      []int{},
 				})
 			})
@@ -86,19 +86,25 @@ var _ = Describe("Player", func() {
 
 				It("Should remove the 1 card from the player's hand", func() {
 					s := player.State()
-					Expect(s.Cards).To(Equal([]int{}))
+					Expect(s.Hand).To(Equal([]int{}))
 				})
 			})
 
 			Describe("When Steal is called with 2", func() {
 				var err error
+				var state PlayerState
 
 				BeforeEach(func() {
 					err = player.Steal(2)
+					state = player.State()
 				})
 
 				It("Should return an error", func() {
 					Expect(err).To(HaveOccurred())
+				})
+
+				It("Should not remove any cards from the player's hand", func() {
+					Expect(state.Hand).To(Equal([]int{1}))
 				})
 			})
 		})
@@ -111,7 +117,7 @@ var _ = Describe("Player", func() {
 			BeforeEach(func() {
 				player = NewPlayerFromState(PlayerState{
 					CardCount: 3,
-					Cards:     []int{},
+					Hand:     []int{},
 				})
 			})
 
@@ -121,7 +127,7 @@ var _ = Describe("Player", func() {
 				})
 
 				It("Adds the negative card value to the player's hand", func() {
-					cards := player.State().Cards
+					cards := player.State().Hand
 					Expect(cards).To(Equal([]int{-1}))
 				})
 			})
@@ -135,7 +141,7 @@ var _ = Describe("Player", func() {
 			BeforeEach(func() {
 				player = NewPlayerFromState(PlayerState{
 					CardCount: 3,
-					Cards:     []int{},
+					Hand:     []int{},
 				})
 				player.Update()
 			})
@@ -152,7 +158,7 @@ var _ = Describe("Player", func() {
 			BeforeEach(func() {
 				player = NewPlayerFromState(PlayerState{
 					CardCount: 3,
-					Cards:     []int{2},
+					Hand:     []int{2},
 				})
 				player.Update()
 			})
@@ -169,7 +175,7 @@ var _ = Describe("Player", func() {
 			BeforeEach(func() {
 				player = NewPlayerFromState(PlayerState{
 					CardCount: 3,
-					Cards:     []int{1, 2},
+					Hand:     []int{1, 2},
 				})
 				player.Update()
 			})
@@ -186,7 +192,7 @@ var _ = Describe("Player", func() {
 			BeforeEach(func() {
 				player = NewPlayerFromState(PlayerState{
 					CardCount: 3,
-					Cards:     []int{-1, -2},
+					Hand:     []int{-1, -2},
 				})
 				player.Update()
 			})

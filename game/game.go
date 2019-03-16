@@ -46,7 +46,7 @@ func (g *_Game) ComputeFirstPlayer() {
 	maxScore := 0
 
 	for i, p := range g.state.Players {
-		score := ScoreHand(p.Cards, g.state.CardCount)
+		score := ScoreHand(p.Hand, g.state.CardCount)
 		if score > maxScore {
 			maxScore = score
 			currentPlayer = i

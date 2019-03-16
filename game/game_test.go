@@ -27,7 +27,7 @@ var _ = Describe("Game", func() {
 	})
 
 	It("Should give both players 1 ca", func() {
-		Expect(g.State().Players[0].Cards).To(HaveLen(0))
+		Expect(g.State().Players[0].Hand).To(HaveLen(0))
 	})
 
 	Describe("ComputeFirstPlayer()()", func() {
@@ -38,12 +38,12 @@ var _ = Describe("Game", func() {
 					CardCount:     3,
 					Players: []game.PlayerState{
 						game.PlayerState{
-							Cards: []int{3},
-							Deck:  []int{1, 2},
+							Hand: []int{3},
+							Deck: []int{1, 2},
 						},
 						game.PlayerState{
-							Cards: []int{1},
-							Deck:  []int{2, 3},
+							Hand: []int{1},
+							Deck: []int{2, 3},
 						},
 					},
 				})
@@ -64,11 +64,11 @@ var _ = Describe("Game", func() {
 			})
 
 			It("Should give player 1 1 card", func() {
-				Expect(g.State().Players[0].Cards).To(HaveLen(1))
+				Expect(g.State().Players[0].Hand).To(HaveLen(1))
 			})
 
 			It("Should give player 2 1 card", func() {
-				Expect(g.State().Players[1].Cards).To(HaveLen(1))
+				Expect(g.State().Players[1].Hand).To(HaveLen(1))
 			})
 		})
 	})
@@ -89,12 +89,12 @@ var _ = Describe("Game", func() {
 					CardCount:     3,
 					Players: []game.PlayerState{
 						game.PlayerState{
-							Cards: []int{3},
-							Deck:  []int{1, 2},
+							Hand: []int{3},
+							Deck: []int{1, 2},
 						},
 						game.PlayerState{
-							Cards: []int{1},
-							Deck:  []int{2, 3},
+							Hand: []int{1},
+							Deck: []int{2, 3},
 						},
 					},
 				})
@@ -116,11 +116,11 @@ var _ = Describe("Game", func() {
 		})
 
 		It("Should add a card to the current player's hand", func() {
-			Expect(s.Players[0].Cards).To(HaveLen(2))
+			Expect(s.Players[0].Hand).To(HaveLen(2))
 		})
 
 		It("Should add a valid card to the current player's hand", func() {
-			Expect(s.Players[0].Cards).To(HaveLen(2))
+			Expect(s.Players[0].Hand).To(HaveLen(2))
 		})
 
 		It("Should become the next player's turn", func() {
@@ -130,13 +130,13 @@ var _ = Describe("Game", func() {
 		It("Should populate the hand with numbers between 1-5", func() {
 			p := s.Players[0]
 			for i := 0; i < 2; i++ {
-				Expect(p.Cards[i]).To(BeNumerically(">=", 1))
-				Expect(p.Cards[i]).To(BeNumerically("<=", 5))
+				Expect(p.Hand[i]).To(BeNumerically(">=", 1))
+				Expect(p.Hand[i]).To(BeNumerically("<=", 5))
 			}
 		})
 
 		It("Should not populate the hand with the same card twice", func() {
-			Expect(s.Players[0].Cards).To(BeASaneHand())
+			Expect(s.Players[0].Hand).To(BeASaneHand())
 		})
 
 		Describe("when Draw is called a second time", func() {
@@ -149,7 +149,7 @@ var _ = Describe("Game", func() {
 			})
 
 			It("should have a sane hand", func() {
-				Expect(s.Players[1].Cards).To(BeASaneHand())
+				Expect(s.Players[1].Hand).To(BeASaneHand())
 			})
 		})
 
@@ -160,12 +160,12 @@ var _ = Describe("Game", func() {
 					CardCount: 3,
 					Players: []game.PlayerState{
 						game.PlayerState{
-							Cards: []int{1, 2, 3},
-							Deck:  []int{},
+							Hand: []int{1, 2, 3},
+							Deck: []int{},
 						},
 						game.PlayerState{
-							Cards: []int{1, 2, 3},
-							Deck:  []int{},
+							Hand: []int{1, 2, 3},
+							Deck: []int{},
 						},
 					},
 				})
@@ -177,7 +177,7 @@ var _ = Describe("Game", func() {
 			})
 
 			It("should have a sane hand", func() {
-				Expect(s.Players[1].Cards).To(BeASaneHand())
+				Expect(s.Players[1].Hand).To(BeASaneHand())
 			})
 		})
 		Describe("when Draw is called and there are no cards to draw", func() {
@@ -190,7 +190,7 @@ var _ = Describe("Game", func() {
 					Players: []game.PlayerState{
 						game.PlayerState{
 							CardCount: 3,
-							Cards:     []int{2, 3},
+							Hand:      []int{2, 3},
 							Deck:      []int{},
 						}},
 				})
@@ -211,12 +211,12 @@ var _ = Describe("Game", func() {
 					CurrentPlayer: 0,
 					Players: []game.PlayerState{
 						game.PlayerState{
-							Cards: []int{2},
-							Deck:  []int{1, 3},
+							Hand: []int{2},
+							Deck: []int{1, 3},
 						},
 						game.PlayerState{
-							Cards: []int{1},
-							Deck:  []int{2, 3},
+							Hand: []int{1},
+							Deck: []int{2, 3},
 						},
 					},
 				})
@@ -230,13 +230,35 @@ var _ = Describe("Game", func() {
 					})
 
 					It("Should add the negative card to the first player's cards", func() {
-						cards := g.State().Players[0].Cards
+						cards := g.State().Players[0].Hand
 						Expect(cards).To(Equal([]int{2, -1}))
 					})
 
 					It("Should remove the card from the second player's cards", func() {
-						cards := g.State().Players[1].Cards
+						cards := g.State().Players[1].Hand
 						Expect(cards).To(Equal([]int{}))
+					})
+				})
+
+				Describe("When the first player steals a card that the 2nd player doesn't have", func() {
+					var err error
+
+					BeforeEach(func() {
+						err = g.Steal(2)
+					})
+
+					It("Shoud throw an error", func() {
+						Expect(err).To(HaveOccurred())
+					})
+
+					It("Should not add the negative card to the first player's cards", func() {
+						cards := g.State().Players[0].Hand
+						Expect(cards).To(Equal([]int{2}))
+					})
+
+					It("Should not remove the card from the second player's cards", func() {
+						cards := g.State().Players[1].Hand
+						Expect(cards).To(Equal([]int{1}))
 					})
 				})
 			})

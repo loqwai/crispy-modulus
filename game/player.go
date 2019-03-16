@@ -13,7 +13,7 @@ type Player struct {
 // PlayerState represents the state of a particular player
 type PlayerState struct {
 	CardCount int
-	Cards     []int
+	Hand      []int
 	Deck      []int
 	Score     int
 }
@@ -29,7 +29,7 @@ func NewPlayer(cardCount int) *Player {
 	p := &Player{
 		state: PlayerState{
 			CardCount: cardCount,
-			Cards:     []int{},
+			Hand:      []int{},
 			Deck:      deck,
 		},
 	}
@@ -55,13 +55,13 @@ func (p *Player) Draw() error {
 	if err != nil {
 		return err
 	}
-	p.state.Cards = append(p.state.Cards, card)
+	p.state.Hand = append(p.state.Hand, card)
 	return nil
 }
 
 // Give adds the negative card value to the player's hand
 func (p *Player) Give(card int) {
-	p.state.Cards = append(p.state.Cards, -1*card)
+	p.state.Hand = append(p.state.Hand, -1*card)
 }
 
 // State returns the state of the player
@@ -71,11 +71,11 @@ func (p *Player) State() PlayerState {
 
 // Update updates the score, etc based on the cards the player has
 func (p *Player) Update() {
-	if len(p.state.Cards) == 0 {
+	if len(p.state.Hand) == 0 {
 		p.state.Score = 0
 		return
 	}
-	p.state.Score = ScoreHand(p.state.Cards, p.state.CardCount)
+	p.state.Score = ScoreHand(p.state.Hand, p.state.CardCount)
 	return
 }
 
@@ -101,8 +101,12 @@ func ScoreHand(cards []int, modulus int) int {
 // Steal removes the card from the player's hand
 func (p *Player) Steal(card int) error {
 	var err error
-	p.state.Cards, err = removeCard(p.state.Cards, card)
-	return err
+	cards, err := removeCard(p.state.Hand, card)
+	if err != nil {
+		return err
+	}
+	p.state.Hand = cards
+	return nil
 }
 
 func removeCard(cards []int, card int) ([]int, error) {
