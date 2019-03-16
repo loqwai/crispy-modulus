@@ -371,7 +371,7 @@ var _ = Describe("Game", func() {
 			})
 		})
 
-		Describe("When the players have no cards left in their deck", func() {
+		Describe("When p1 has no cards left in their deck", func() {
 			var isDone bool
 
 			BeforeEach(func() {
@@ -385,6 +385,32 @@ var _ = Describe("Game", func() {
 						},
 						game.PlayerState{
 							Hand: []int{1},
+							Deck: []int{2},
+						},
+					},
+				})
+
+				isDone = g.IsDone()
+			})
+
+			It("Should return true", func() {
+				Expect(isDone).To(BeTrue())
+			})
+		})
+		Describe("When p2 has no cards left in their deck", func() {
+			var isDone bool
+
+			BeforeEach(func() {
+				g.SetState(game.State{
+					CardCount:     1,
+					CurrentPlayer: 0,
+					Players: []game.PlayerState{
+						game.PlayerState{
+							Hand: []int{1},
+							Deck: []int{2, 3},
+						},
+						game.PlayerState{
+							Hand: []int{1, 2, 3},
 							Deck: []int{},
 						},
 					},
