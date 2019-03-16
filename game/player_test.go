@@ -132,43 +132,43 @@ var _ = Describe("Player", func() {
 		})
 	})
 
-	Describe("Score()", func() {
+	Describe("Sum()", func() {
 		Describe("When the player has no cards", func() {
 			var player *Player
-			var score int
+			var sum int
 
 			BeforeEach(func() {
 				player = NewPlayerFromState(3, PlayerState{
 					Deck: []int{},
 					Hand: []int{},
 				})
-				score = player.Score()
+				sum = player.Sum()
 			})
 
-			It("Should calculate the player's score to be 0", func() {
-				Expect(score).To(Equal(0))
+			It("Should calculate the player's sum to be 0", func() {
+				Expect(sum).To(Equal(0))
 			})
 		})
 
 		Describe("When the player has 1 card, a 2", func() {
 			var player *Player
-			var score int
+			var sum int
 
 			BeforeEach(func() {
 				player = NewPlayerFromState(3, PlayerState{
 					Deck: []int{},
 					Hand: []int{2},
 				})
-				score = player.Score()
+				sum = player.Sum()
 			})
 
-			It("Should calculate the player's score to be 2", func() {
-				Expect(score).To(Equal(2))
+			It("Should calculate the player's sum to be 2", func() {
+				Expect(sum).To(Equal(2))
 			})
 		})
 
 		Describe("When the player has 2 cards, a 1 and a 2", func() {
-			var score int
+			var sum int
 			var player *Player
 
 			BeforeEach(func() {
@@ -176,28 +176,28 @@ var _ = Describe("Player", func() {
 					Deck: []int{},
 					Hand: []int{1, 2},
 				})
-				score = player.Score()
+				sum = player.Sum()
 			})
 
-			It("Should calculate the player's score to be 0", func() {
-				Expect(score).To(Equal(0))
+			It("Should calculate the player's sum to be 3", func() {
+				Expect(sum).To(Equal(3))
 			})
 		})
 
 		Describe("When the player has 2 stolen cards, -1 and -2", func() {
-			var score int
+			var sum int
 			var player *Player
 
 			BeforeEach(func() {
-				player = NewPlayerFromState(2, PlayerState{
-					Deck: []int{},
+				player = NewPlayerFromState(3, PlayerState{
+					Deck: []int{3},
 					Hand: []int{-1, -2},
 				})
-				score = player.Score()
+				sum = player.Sum()
 			})
 
-			It("Should calculate the player's score to be -3", func() {
-				Expect(score).To(Equal(-3))
+			It("Should calculate the player's sum to be -3", func() {
+				Expect(sum).To(Equal(-3))
 			})
 		})
 	})

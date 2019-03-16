@@ -10,6 +10,7 @@ type Game interface {
 	State() State
 	String() string
 	Steal(card int) error
+	WhoIsWinning() int
 }
 
 // State describe what state the game is currently in. It is serializable
@@ -51,11 +52,12 @@ func (g *_Game) State() State {
 
 func (g *_Game) ComputeFirstPlayer() {
 	currentPlayer := 0
-	maxScore := 0
+	maxMod := 0
 
 	for i, p := range g.players {
-		if p.Score() > maxScore {
-			maxScore = p.Score()
+		mod := p.Sum() % g.cardCount
+		if mod > maxMod {
+			maxMod = mod
 			currentPlayer = i
 		}
 	}
@@ -118,4 +120,45 @@ func (g *_Game) Steal(card int) error {
 
 	g.currentPlayer = (g.currentPlayer + 1) % len(g.players)
 	return nil
+}
+
+func (g *_Game) WhoIsWinning() int {
+	bestPlayer := struct {
+		index    int
+		mod      int
+		multiple int
+	}{
+		index:    0,
+		mod:      g.players[0].Sum() % g.cardCount,
+		multiple: g.players[0].Sum() / g.cardCount,
+	}
+
+	bestWorstPlayer := -1
+	mostNegativeSum := 0
+
+	for i, p := range g.players {
+		if p.Sum() < mostNegativeSum {
+			bestWorstPlayer = i
+			mostNegativeSum = p.Sum()
+			continue
+		}
+		mod := p.Sum() % g.cardCount
+		multiple := p.Sum() / g.cardCount
+
+		if mod > bestPlayer.mod {
+			continue
+		}
+
+		if mod < bestPlayer.mod || multiple < bestPlayer.multiple {
+			bestPlayer.index = i
+			bestPlayer.mod = mod
+			bestPlayer.multiple = multiple
+			continue
+		}
+	}
+
+	if g.players[bestPlayer.index].Sum() >= 0 {
+		return bestPlayer.index
+	}
+	return bestWorstPlayer
 }

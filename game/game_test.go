@@ -30,7 +30,7 @@ var _ = Describe("Game", func() {
 		Expect(g.State().Players[0].Hand).To(HaveLen(0))
 	})
 
-	Describe("ComputeFirstPlayer()()", func() {
+	Describe("ComputeFirstPlayer()", func() {
 		Describe("When the second player has the higher modulus", func() {
 			BeforeEach(func() {
 				g.SetState(game.State{
@@ -102,6 +102,100 @@ var _ = Describe("Game", func() {
 
 			It("Should not set player 2 to be the current player (in case we are restoring a saved game)", func() {
 				Expect(g.State().CurrentPlayer).To(Equal(0))
+			})
+		})
+	})
+
+	Describe("WhoIsWinning()", func() {
+		Describe("When the first player is winning", func() {
+			BeforeEach(func() {
+				g.SetState(game.State{
+					CurrentPlayer: 0,
+					CardCount:     3,
+					Players: []game.PlayerState{
+						game.PlayerState{
+							Hand: []int{3},
+							Deck: []int{1, 2},
+						},
+						game.PlayerState{
+							Hand: []int{1},
+							Deck: []int{2, 3},
+						},
+					},
+				})
+			})
+
+			It("Should say the first player is winning", func() {
+				Expect(g.WhoIsWinning()).To(Equal(0))
+			})
+		})
+
+		Describe("When the second player is winning with the lowest mod", func() {
+			BeforeEach(func() {
+				g.SetState(game.State{
+					CurrentPlayer: 0,
+					CardCount:     3,
+					Players: []game.PlayerState{
+						game.PlayerState{
+							Hand: []int{2, 3},
+							Deck: []int{1},
+						},
+						game.PlayerState{
+							Hand: []int{1, 2},
+							Deck: []int{3},
+						},
+					},
+				})
+			})
+
+			It("Should say the second player is winning", func() {
+				Expect(g.WhoIsWinning()).To(Equal(1))
+			})
+		})
+
+		Describe("When the first player is winning by being the most negative", func() {
+			BeforeEach(func() {
+				g.SetState(game.State{
+					CurrentPlayer: 0,
+					CardCount:     3,
+					Players: []game.PlayerState{
+						game.PlayerState{
+							Hand: []int{-2, -3},
+							Deck: []int{1},
+						},
+						game.PlayerState{
+							Hand: []int{-1, -2},
+							Deck: []int{3},
+						},
+					},
+				})
+			})
+
+			It("Should say the first player is winning", func() {
+				Expect(g.WhoIsWinning()).To(Equal(0))
+			})
+		})
+
+		Describe("When the first player is winning by having the lowest multiple", func() {
+			BeforeEach(func() {
+				g.SetState(game.State{
+					CurrentPlayer: 0,
+					CardCount:     3,
+					Players: []game.PlayerState{
+						game.PlayerState{
+							Hand: []int{},
+							Deck: []int{1, 2, 3},
+						},
+						game.PlayerState{
+							Hand: []int{3},
+							Deck: []int{1, 2},
+						},
+					},
+				})
+			})
+
+			It("Should say the first player is winning", func() {
+				Expect(g.WhoIsWinning()).To(Equal(0))
 			})
 		})
 	})

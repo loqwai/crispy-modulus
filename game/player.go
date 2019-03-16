@@ -72,28 +72,34 @@ func (p *Player) State() PlayerState {
 	}
 }
 
-// Score finds the...score...of a...hand.
-func (p *Player) Score() int {
-	return scoreHand(p.hand, p.cardCount)
-}
+// Sum adds up all the cards in the player's hand
+func (p *Player) Sum() int {
+	s := 0
 
-func scoreHand(cards []int, modulus int) int {
-	mySum := 0
-	theirSum := 0
-	for _, c := range cards {
-		if c < 0 {
-			theirSum += c
-			continue
-		}
-		mySum += c
+	for i := 0; i < len(p.hand); i++ {
+		s += p.hand[i]
 	}
 
-	if -1*theirSum > mySum {
-		return mySum + theirSum
-	}
-
-	return (mySum - theirSum) % modulus
+	return s
 }
+
+// func scoreHand(cards []int, modulus int) int {
+// 	mySum := 0
+// 	theirSum := 0
+// 	for _, c := range cards {
+// 		if c < 0 {
+// 			theirSum += c
+// 			continue
+// 		}
+// 		mySum += c
+// 	}
+
+// 	if -1*theirSum > mySum {
+// 		return mySum + theirSum
+// 	}
+
+// 	return (mySum - theirSum) % modulus
+// }
 
 // Steal removes the card from the player's hand
 func (p *Player) Steal(card int) error {
