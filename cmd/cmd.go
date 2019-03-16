@@ -3,9 +3,11 @@ package cmd
 import (
 	"bufio"
 	"fmt"
+	"math/rand"
 	"os"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/loqwai/crispy-modulus/game"
 	"github.com/spf13/cobra"
@@ -77,6 +79,7 @@ func printGame(g game.Game) error {
 
 // Execute is the main runtime of the application
 func Execute() {
+	rand.Seed(time.Now().UTC().UnixNano())
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)

@@ -1,6 +1,9 @@
 package game
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"fmt"
+)
 
 // Game represents an instance of the game
 type Game interface {
@@ -88,7 +91,7 @@ func (g *_Game) String() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return string(output), nil
+	return string(output) + fmt.Sprintf("isDone: %t WhoIsWinning: %d", g.IsDone(), g.WhoIsWinning()), nil
 }
 
 func (g *_Game) Draw() error {

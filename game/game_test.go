@@ -13,7 +13,7 @@ var _ = Describe("Game", func() {
 	var g game.Game
 
 	BeforeEach(func() {
-		rand.Seed(1)
+		rand.Seed(1) //this is assumed for other tests. It sucks, I know.
 		g = game.New(3)
 	})
 
@@ -245,6 +245,29 @@ var _ = Describe("Game", func() {
 
 			It("Should say the first player is winning", func() {
 				Expect(g.WhoIsWinning()).To(Equal(0))
+			})
+		})
+
+		Describe("When the players are exactly tied", func() {
+			BeforeEach(func() {
+				g.SetState(game.State{
+					CurrentPlayer: 0,
+					CardCount:     3,
+					Players: []game.PlayerState{
+						game.PlayerState{
+							Hand: []int{3},
+							Deck: []int{1, 2},
+						},
+						game.PlayerState{
+							Hand: []int{3},
+							Deck: []int{1, 2},
+						},
+					},
+				})
+			})
+
+			It("Should say -1, I guess. Maybe?", func() {
+				Expect(g.WhoIsWinning()).To(Equal(-1))
 			})
 		})
 	})
