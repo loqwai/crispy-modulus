@@ -83,6 +83,11 @@ func (p *Player) Sum() int {
 	return s
 }
 
+//RemainingCardCount returns the number of cards left in the player's hand
+func (p *Player) RemainingCardCount() int {
+	return len(p.deck)
+}
+
 // func scoreHand(cards []int, modulus int) int {
 // 	mySum := 0
 // 	theirSum := 0

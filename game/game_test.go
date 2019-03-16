@@ -107,7 +107,7 @@ var _ = Describe("Game", func() {
 	})
 
 	Describe("WhoIsWinning()", func() {
-		Describe("When the first player is winning", func() {
+		Describe("When the first player is has the lowest mod", func() {
 			BeforeEach(func() {
 				g.SetState(game.State{
 					CurrentPlayer: 0,
@@ -153,6 +153,29 @@ var _ = Describe("Game", func() {
 			})
 		})
 
+		Describe("When the players are tied in terms of mod, but p0 has a greater multiple", func() {
+			BeforeEach(func() {
+				g.SetState(game.State{
+					CurrentPlayer: 0,
+					CardCount:     3,
+					Players: []game.PlayerState{
+						game.PlayerState{
+							Hand: []int{},
+							Deck: []int{1, 2, 3},
+						},
+						game.PlayerState{
+							Hand: []int{3},
+							Deck: []int{1, 2},
+						},
+					},
+				})
+			})
+
+			It("Should say the first player is winning", func() {
+				Expect(g.WhoIsWinning()).To(Equal(0))
+			})
+		})
+
 		Describe("When the first player is winning by being the most negative", func() {
 			BeforeEach(func() {
 				g.SetState(game.State{
@@ -173,6 +196,29 @@ var _ = Describe("Game", func() {
 
 			It("Should say the first player is winning", func() {
 				Expect(g.WhoIsWinning()).To(Equal(0))
+			})
+		})
+
+		Describe("When the the players have tied, but p1 initiated the tie", func() {
+			BeforeEach(func() {
+				g.SetState(game.State{
+					CurrentPlayer: 0,
+					CardCount:     3,
+					Players: []game.PlayerState{
+						game.PlayerState{
+							Hand: []int{3},
+							Deck: []int{},
+						},
+						game.PlayerState{
+							Hand: []int{3},
+							Deck: []int{1, 2},
+						},
+					},
+				})
+			})
+
+			It("Should say that p2 is winning", func() {
+				Expect(g.WhoIsWinning()).To(Equal(1))
 			})
 		})
 
