@@ -38,12 +38,14 @@ var _ = Describe("Game", func() {
 					CardCount:     3,
 					Players: []game.PlayerState{
 						game.PlayerState{
-							Hand: []int{3},
-							Deck: []int{1, 2},
+							CardCount: 3,
+							Hand:      []int{3},
+							Deck:      []int{1, 2},
 						},
 						game.PlayerState{
-							Hand: []int{1},
-							Deck: []int{2, 3},
+							CardCount: 3,
+							Hand:      []int{1},
+							Deck:      []int{2, 3},
 						},
 					},
 				})
@@ -89,12 +91,14 @@ var _ = Describe("Game", func() {
 					CardCount:     3,
 					Players: []game.PlayerState{
 						game.PlayerState{
-							Hand: []int{3},
-							Deck: []int{1, 2},
+							CardCount: 3,
+							Hand:      []int{3},
+							Deck:      []int{1, 2},
 						},
 						game.PlayerState{
-							Hand: []int{1},
-							Deck: []int{2, 3},
+							CardCount: 3,
+							Hand:      []int{1},
+							Deck:      []int{2, 3},
 						},
 					},
 				})
@@ -160,12 +164,14 @@ var _ = Describe("Game", func() {
 					CardCount: 3,
 					Players: []game.PlayerState{
 						game.PlayerState{
-							Hand: []int{1, 2, 3},
-							Deck: []int{},
+							CardCount: 3,
+							Hand:      []int{1, 2, 3},
+							Deck:      []int{},
 						},
 						game.PlayerState{
-							Hand: []int{1, 2, 3},
-							Deck: []int{},
+							CardCount: 3,
+							Hand:      []int{1, 2, 3},
+							Deck:      []int{},
 						},
 					},
 				})
@@ -203,6 +209,66 @@ var _ = Describe("Game", func() {
 		})
 	})
 
+	Describe("IsDone()", func() {
+		Describe("When the players have cards left in their deck", func() {
+			var isDone bool
+
+			BeforeEach(func() {
+				g.SetState(game.State{
+					CardCount:     2,
+					CurrentPlayer: 0,
+					Players: []game.PlayerState{
+						game.PlayerState{
+							CardCount: 2,
+							Hand:      []int{1},
+							Deck:      []int{2},
+						},
+						game.PlayerState{
+							CardCount: 2,
+							Hand:      []int{2},
+							Deck:      []int{1},
+						},
+					},
+				})
+
+				isDone = g.IsDone()
+			})
+
+			It("Should return true", func() {
+				Expect(isDone).To(BeFalse())
+			})
+		})
+
+		Describe("When the players have no cards left in their deck", func() {
+			var isDone bool
+
+			BeforeEach(func() {
+				g.SetState(game.State{
+					CardCount:     1,
+					CurrentPlayer: 0,
+					Players: []game.PlayerState{
+						game.PlayerState{
+							CardCount: 1,
+							Hand:      []int{1},
+							Deck:      []int{},
+						},
+						game.PlayerState{
+							CardCount: 1,
+							Hand:      []int{1},
+							Deck:      []int{},
+						},
+					},
+				})
+
+				isDone = g.IsDone()
+			})
+
+			It("Should return true", func() {
+				Expect(isDone).To(BeTrue())
+			})
+		})
+	})
+
 	Describe("Steal()", func() {
 		Describe("When both players have one card each", func() {
 			BeforeEach(func() {
@@ -211,12 +277,14 @@ var _ = Describe("Game", func() {
 					CurrentPlayer: 0,
 					Players: []game.PlayerState{
 						game.PlayerState{
-							Hand: []int{2},
-							Deck: []int{1, 3},
+							CardCount: 3,
+							Hand:      []int{2},
+							Deck:      []int{1, 3},
 						},
 						game.PlayerState{
-							Hand: []int{1},
-							Deck: []int{2, 3},
+							CardCount: 3,
+							Hand:      []int{1},
+							Deck:      []int{2, 3},
 						},
 					},
 				})

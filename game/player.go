@@ -7,7 +7,9 @@ import (
 
 // Player represents the data of a single player.
 type Player struct {
-	state PlayerState
+	cardCount int
+	hand      []int
+	deck      []int
 }
 
 // PlayerState represents the state of a particular player
@@ -27,11 +29,9 @@ func NewPlayer(cardCount int) *Player {
 	}
 
 	p := &Player{
-		state: PlayerState{
-			CardCount: cardCount,
-			Hand:      []int{},
-			Deck:      deck,
-		},
+		cardCount: cardCount,
+		hand:      []int{},
+		deck:      deck,
 	}
 
 	return p
@@ -41,46 +41,46 @@ func NewPlayer(cardCount int) *Player {
 // instance from a player state object
 func NewPlayerFromState(state PlayerState) *Player {
 	return &Player{
-		state: state,
+		cardCount: state.CardCount,
+		deck:      state.Deck,
+		hand:      state.Hand,
 	}
 }
 
 // Draw draws a card
 func (p *Player) Draw() error {
-	card, err := nextCard(p.state.Deck)
+	card, err := nextCard(p.deck)
 	if err != nil {
 		return err
 	}
-	p.state.Deck, err = removeCard(p.state.Deck, card)
+	p.deck, err = removeCard(p.deck, card)
 	if err != nil {
 		return err
 	}
-	p.state.Hand = append(p.state.Hand, card)
+	p.hand = append(p.hand, card)
 	return nil
 }
 
 // Give adds the negative card value to the player's hand
 func (p *Player) Give(card int) {
-	p.state.Hand = append(p.state.Hand, -1*card)
+	p.hand = append(p.hand, -1*card)
 }
 
 // State returns the state of the player
 func (p *Player) State() PlayerState {
-	return p.state
-}
-
-// Update updates the score, etc based on the cards the player has
-func (p *Player) Update() {
-	if len(p.state.Hand) == 0 {
-		p.state.Score = 0
-		return
+	return PlayerState{
+		Deck:  p.deck,
+		Hand:  p.hand,
+		Score: p.Score(),
 	}
-	p.state.Score = ScoreHand(p.state.Hand, p.state.CardCount)
-	return
 }
 
-// ScoreHand finds the...score...of a...hand.
-func ScoreHand(cards []int, modulus int) int {
+// Score finds the...score...of a...hand.
+func (p *Player) Score() int {
+	return scoreHand(p.hand, p.cardCount)
+}
+
+func scoreHand(cards []int, modulus int) int {
 	mySum := 0
 	theirSum := 0
 	for _, c := range cards {
@@ -101,11 +101,11 @@ func ScoreHand(cards []int, modulus int) int {
 // Steal removes the card from the player's hand
 func (p *Player) Steal(card int) error {
 	var err error
-	cards, err := removeCard(p.state.Hand, card)
+	cards, err := removeCard(p.hand, card)
 	if err != nil {
 		return err
 	}
-	p.state.Hand = cards
+	p.hand = cards
 	return nil
 }
 

@@ -40,7 +40,7 @@ var _ = Describe("Player", func() {
 			BeforeEach(func() {
 				player = NewPlayerFromState(PlayerState{
 					CardCount: 1,
-					Hand:     []int{},
+					Hand:      []int{},
 					Deck:      []int{1},
 				})
 				err := player.Draw()
@@ -73,7 +73,7 @@ var _ = Describe("Player", func() {
 			BeforeEach(func() {
 				player = NewPlayerFromState(PlayerState{
 					CardCount: 3,
-					Hand:     []int{1},
+					Hand:      []int{1},
 					Deck:      []int{},
 				})
 			})
@@ -117,7 +117,7 @@ var _ = Describe("Player", func() {
 			BeforeEach(func() {
 				player = NewPlayerFromState(PlayerState{
 					CardCount: 3,
-					Hand:     []int{},
+					Hand:      []int{},
 				})
 			})
 
@@ -134,72 +134,71 @@ var _ = Describe("Player", func() {
 		})
 	})
 
-	Describe("Update()", func() {
+	Describe("Score()", func() {
 		Describe("When the player has no cards", func() {
 			var player *Player
+			var score int
 
 			BeforeEach(func() {
 				player = NewPlayerFromState(PlayerState{
 					CardCount: 3,
-					Hand:     []int{},
+					Hand:      []int{},
 				})
-				player.Update()
+				score = player.Score()
 			})
 
 			It("Should calculate the player's score to be 0", func() {
-				s := player.State().Score
-				Expect(s).To(Equal(0))
+				Expect(score).To(Equal(0))
 			})
 		})
 
 		Describe("When the player has 1 card, a 2", func() {
 			var player *Player
-
+			var score int
 			BeforeEach(func() {
 				player = NewPlayerFromState(PlayerState{
 					CardCount: 3,
-					Hand:     []int{2},
+					Hand:      []int{2},
 				})
-				player.Update()
+				score = player.Score()
 			})
 
 			It("Should calculate the player's score to be 2", func() {
-				s := player.State().Score
-				Expect(s).To(Equal(2))
+				Expect(score).To(Equal(2))
 			})
 		})
 
 		Describe("When the player has 2 cards, a 1 and a 2", func() {
+			var score int
 			var player *Player
 
 			BeforeEach(func() {
 				player = NewPlayerFromState(PlayerState{
 					CardCount: 3,
-					Hand:     []int{1, 2},
+					Hand:      []int{1, 2},
 				})
-				player.Update()
+				score = player.Score()
 			})
 
 			It("Should calculate the player's score to be 0", func() {
-				s := player.State().Score
-				Expect(s).To(Equal(0))
+				Expect(score).To(Equal(0))
 			})
 		})
 
 		Describe("When the player has 2 stolen cards, -1 and -2", func() {
+			var score int
 			var player *Player
 
 			BeforeEach(func() {
 				player = NewPlayerFromState(PlayerState{
 					CardCount: 3,
-					Hand:     []int{-1, -2},
+					Hand:      []int{-1, -2},
 				})
-				player.Update()
+				score = player.Score()
 			})
 
 			It("Should calculate the player's score to be -3", func() {
-				s := player.State().Score
-				Expect(s).To(Equal(-3))
+				Expect(score).To(Equal(-3))
 			})
 		})
 	})
