@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"bufio"
-	"encoding/json"
 	"fmt"
 	"os"
 	"strconv"
@@ -17,9 +16,9 @@ var rootCmd = &cobra.Command{
 	Short: "crispy-modulus is a card game",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		g := game.New(3)
-
+		g.Start()
 		for {
-			err := printState(g.State())
+			err := printGame(g)
 			if err != nil {
 				return err
 			}
@@ -66,8 +65,8 @@ func getCommand() (string, error) {
 	return strings.TrimSpace(command), nil
 }
 
-func printState(state game.State) error {
-	output, err := json.MarshalIndent(state, "", "  ")
+func printGame(g game.Game) error {
+	output, err := g.String()
 	if err != nil {
 		return err
 	}

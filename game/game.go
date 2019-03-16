@@ -1,5 +1,7 @@
 package game
 
+import "encoding/json"
+
 // Game represents an instance of the game
 type Game interface {
 	ComputeFirstPlayer()
@@ -8,7 +10,7 @@ type Game interface {
 	SetState(state State)
 	Start() error
 	State() State
-	String() string
+	String() (string, error)
 	Steal(card int) error
 	WhoIsWinning() int
 }
@@ -67,6 +69,8 @@ func (g *_Game) ComputeFirstPlayer() {
 func (g *_Game) Start() error {
 	g.Draw()
 	g.Draw()
+	g.ComputeFirstPlayer()
+
 	return nil
 }
 
@@ -79,12 +83,12 @@ func (g *_Game) SetState(state State) {
 	}
 }
 
-func (g *_Game) String() string {
-	return `
-          | Dealt | Remaining | Total | Modulus |
-  Player1 | 2 3 4 |       1 5 |     9 |       4 |
-  Player2 | 1 4 5 |       2 3 |    10 |       0 |
-	`
+func (g *_Game) String() (string, error) {
+	output, err := json.MarshalIndent(g.State(), "", "  ")
+	if err != nil {
+		return "", err
+	}
+	return string(output), nil
 }
 
 func (g *_Game) Draw() error {

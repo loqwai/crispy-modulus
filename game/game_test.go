@@ -13,7 +13,7 @@ var _ = Describe("Game", func() {
 	var g game.Game
 
 	BeforeEach(func() {
-		rand.Seed(0)
+		rand.Seed(1)
 		g = game.New(3)
 	})
 
@@ -26,7 +26,7 @@ var _ = Describe("Game", func() {
 		Expect(g.State().CurrentPlayer).To(Equal(0))
 	})
 
-	It("Should give both players 1 ca", func() {
+	It("Should give both players 1 card", func() {
 		Expect(g.State().Players[0].Hand).To(HaveLen(0))
 	})
 
@@ -69,6 +69,9 @@ var _ = Describe("Game", func() {
 
 			It("Should give player 2 1 card", func() {
 				Expect(g.State().Players[1].Hand).To(HaveLen(1))
+			})
+			It("Should set p2 to be the current player. Because I cheated and know it should be.", func() {
+				Expect(g.State().CurrentPlayer).To(Equal(1))
 			})
 		})
 	})
@@ -255,20 +258,16 @@ var _ = Describe("Game", func() {
 			s = g.State()
 		})
 
-		It("Should add a card to the current player's hand", func() {
-			Expect(s.Players[0].Hand).To(HaveLen(2))
-		})
-
 		It("Should add a valid card to the current player's hand", func() {
-			Expect(s.Players[0].Hand).To(HaveLen(2))
+			Expect(s.Players[1].Hand).To(HaveLen(2))
 		})
 
 		It("Should become the next player's turn", func() {
-			Expect(s.CurrentPlayer).To(Equal(1))
+			Expect(s.CurrentPlayer).To(Equal(0))
 		})
 
 		It("Should populate the hand with numbers between 1-5", func() {
-			p := s.Players[0]
+			p := s.Players[1]
 			for i := 0; i < 2; i++ {
 				Expect(p.Hand[i]).To(BeNumerically(">=", 1))
 				Expect(p.Hand[i]).To(BeNumerically("<=", 5))
@@ -285,7 +284,7 @@ var _ = Describe("Game", func() {
 			})
 
 			It("should be the other player's turn now", func() {
-				Expect(g.State().CurrentPlayer).To(Equal(0))
+				Expect(g.State().CurrentPlayer).To(Equal(1))
 			})
 
 			It("should have a sane hand", func() {
