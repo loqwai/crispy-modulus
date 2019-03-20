@@ -3,8 +3,10 @@ package game
 import (
 	"encoding/json"
 	"fmt"
+	"math"
 )
 
+var infinity = int(math.Inf(1)) - 1 //bullshit
 // Game represents an instance of the game
 type Game interface {
 	ComputeFirstPlayer()
@@ -134,10 +136,12 @@ func (g *_Game) WhoIsWinning() int {
 		index    int
 		mod      int
 		multiple int
+		noCards  bool
 	}{
-		index:    0,
-		mod:      g.players[0].Sum() % g.cardCount,
-		multiple: g.players[0].Sum() / g.cardCount,
+		index:    -1,
+		mod:      infinity,
+		multiple: infinity,
+		noCards:  true,
 	}
 
 	bestWorstPlayer := -1
@@ -160,20 +164,39 @@ func (g *_Game) WhoIsWinning() int {
 			bestPlayer.index = i
 			bestPlayer.mod = mod
 			bestPlayer.multiple = multiple
+			bestPlayer.noCards = p.RemainingCardCount() == 0
 			continue
 		}
 
 		//ties
-		if p.RemainingCardCount() == 0 {
-			continue
-		}
-
-		if multiple <= bestPlayer.multiple {
+		if p.RemainingCardCount() != 0 && bestPlayer.noCards {
 			bestPlayer.index = i
 			bestPlayer.mod = mod
 			bestPlayer.multiple = multiple
+			bestPlayer.noCards = p.RemainingCardCount() == 0
 			continue
 		}
+
+		if multiple < bestPlayer.multiple {
+			bestPlayer.index = i
+			bestPlayer.mod = mod
+			bestPlayer.multiple = multiple
+			bestPlayer.noCards = p.RemainingCardCount() == 0
+			continue
+		}
+
+		// "true" tie
+		if multiple == bestPlayer.multiple {
+			bestPlayer.index = -1
+			bestPlayer.mod = mod
+			bestPlayer.multiple = multiple
+			bestPlayer.noCards = p.RemainingCardCount() == 0
+			continue
+		}
+	}
+
+	if bestPlayer.index == -1 {
+		return -1
 	}
 
 	if g.players[bestPlayer.index].Sum() >= 0 {
