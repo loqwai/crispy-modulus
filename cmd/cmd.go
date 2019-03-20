@@ -55,7 +55,7 @@ var rootCmd = &cobra.Command{
 }
 
 func getCommand() (string, error) {
-	_, err := fmt.Println("Whatcha wanna do? (d: draw, s#: steal card)")
+	_, err := fmt.Fprintln(os.Stderr, "Whatcha wanna do? (d: draw, s#: steal card)")
 	if err != nil {
 		return "", err
 	}
