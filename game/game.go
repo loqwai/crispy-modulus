@@ -2,7 +2,6 @@ package game
 
 import (
 	"encoding/json"
-	"fmt"
 	"math"
 )
 
@@ -25,6 +24,8 @@ type State struct {
 	CardCount     int
 	CurrentPlayer int
 	Players       []PlayerState
+	IsDone        bool
+	WhoIsWinning  int
 }
 
 type _Game struct {
@@ -54,6 +55,8 @@ func (g *_Game) State() State {
 		CardCount:     g.cardCount,
 		CurrentPlayer: g.currentPlayer,
 		Players:       playerStates,
+		IsDone:        g.IsDone(),
+		WhoIsWinning:  g.WhoIsWinning(),
 	}
 }
 
@@ -93,7 +96,7 @@ func (g *_Game) String() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return string(output) + fmt.Sprintf("isDone: %t WhoIsWinning: %d", g.IsDone(), g.WhoIsWinning()), nil
+	return string(output), nil
 }
 
 func (g *_Game) Draw() error {
@@ -108,10 +111,10 @@ func (g *_Game) Draw() error {
 }
 
 func (g *_Game) IsDone() bool {
-	if len(g.State().Players[0].Deck) == 0 {
+	if len(g.players[0].State().Deck) == 0 {
 		return true
 	}
-	if len(g.State().Players[1].Deck) == 0 {
+	if len(g.players[1].State().Deck) == 0 {
 		return true
 	}
 	return false

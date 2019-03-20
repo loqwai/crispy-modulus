@@ -18,7 +18,7 @@ var rootCmd = &cobra.Command{
 	Short: "crispy-modulus is a card game",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		rand.Seed(time.Now().UTC().UnixNano())
-		g := game.New(10)
+		g := game.New(3)
 		g.Start()
 		for {
 			err := printGame(g)
