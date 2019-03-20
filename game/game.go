@@ -151,6 +151,12 @@ func (g *_Game) WhoIsWinning() int {
 	mostNegativeSum := 0
 
 	for i, p := range g.players {
+
+		if p.Sum() == mostNegativeSum && bestWorstPlayer != -1 {
+			bestWorstPlayer = -1
+			continue
+		}
+
 		if p.Sum() < mostNegativeSum {
 			bestWorstPlayer = i
 			mostNegativeSum = p.Sum()

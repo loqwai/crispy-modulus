@@ -234,6 +234,29 @@ var _ = Describe("Game", func() {
 				})
 			})
 
+			Describe("When the the players have tied with negative values", func() {
+				BeforeEach(func() {
+					g.SetState(game.State{
+						CurrentPlayer: 0,
+						CardCount:     3,
+						Players: []game.PlayerState{
+							game.PlayerState{
+								Hand: []int{-3, 2},
+								Deck: []int{1},
+							},
+							game.PlayerState{
+								Hand: []int{-3, 2},
+								Deck: []int{1},
+							},
+						},
+					})
+				})
+
+				It("Should say that its a tie", func() {
+					Expect(g.WhoIsWinning()).To(Equal(-1))
+				})
+			})
+
 			Describe("When the the players have tied, and both initiated the tie", func() {
 				BeforeEach(func() {
 					g.SetState(game.State{
