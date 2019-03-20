@@ -17,10 +17,22 @@ var rootCmd = &cobra.Command{
 	Use:   "crispy-modulus",
 	Short: "crispy-modulus is a card game",
 	RunE: func(cmd *cobra.Command, args []string) error {
+		var err error
 		rand.Seed(time.Now().UTC().UnixNano())
-		g := game.New(3)
+		cardCount := 5
+		if len(args) > 0 {
+			cardCount, err = strconv.Atoi(args[0])
+			if err != nil {
+				return err
+			}
+		}
+		g := game.New(cardCount)
 		g.Start()
 		for {
+			if g.IsDone() {
+				break
+			}
+
 			err := printGame(g)
 			if err != nil {
 				return err
@@ -28,13 +40,15 @@ var rootCmd = &cobra.Command{
 
 			command, err := getCommand()
 			if err != nil {
-				return err
+				fmt.Fprintln(os.Stderr, err.Error())
+				continue
 			}
 
 			if command == "d" {
 				err = g.Draw()
 				if err != nil {
-					return err
+					fmt.Fprintln(os.Stderr, err.Error())
+					continue
 				}
 				continue
 			}
@@ -42,15 +56,23 @@ var rootCmd = &cobra.Command{
 			if strings.HasPrefix(command, "s") {
 				val, err := strconv.Atoi(strings.TrimPrefix(command, "s"))
 				if err != nil {
-					return err
+					fmt.Fprintln(os.Stderr, err.Error())
+					continue
 				}
 
 				err = g.Steal(val)
 				if err != nil {
-					return err
+					fmt.Fprintln(os.Stderr, err.Error())
+					continue
 				}
+				continue
 			}
+
+			fmt.Fprintln(os.Stderr, "Unrecognized command: ", command)
 		}
+
+		fmt.Println("We have a winner! It was:", g.WhoIsWinning())
+		return nil
 	},
 }
 

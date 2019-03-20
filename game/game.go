@@ -23,9 +23,17 @@ type Game interface {
 type State struct {
 	CardCount     int
 	CurrentPlayer int
-	Players       []PlayerState
+	Players       []GamePlayerState
 	IsDone        bool
 	WhoIsWinning  int
+}
+
+// GamePlayerState is a superset of PlayerState that includes the Mod
+type GamePlayerState struct {
+	Hand []int
+	Deck []int
+	Sum  int
+	Mod  int
 }
 
 type _Game struct {
@@ -47,9 +55,14 @@ func New(cardCount int) Game {
 }
 
 func (g *_Game) State() State {
-	playerStates := make([]PlayerState, len(g.players))
+	playerStates := make([]GamePlayerState, len(g.players))
 	for i, p := range g.players {
-		playerStates[i] = p.State()
+		playerStates[i] = GamePlayerState{
+			Hand: p.State().Hand,
+			Deck: p.State().Deck,
+			Sum:  p.State().Sum,
+			Mod:  p.State().Sum % g.cardCount,
+		}
 	}
 	return State{
 		CardCount:     g.cardCount,
@@ -75,8 +88,11 @@ func (g *_Game) ComputeFirstPlayer() {
 }
 
 func (g *_Game) Start() error {
-	g.Draw()
-	g.Draw()
+	for i := 0; i < g.cardCount/2; i++ {
+		g.Draw()
+		g.Draw()
+	}
+
 	g.ComputeFirstPlayer()
 
 	return nil
@@ -87,7 +103,11 @@ func (g *_Game) SetState(state State) {
 	g.currentPlayer = state.CurrentPlayer
 	g.players = make([]*Player, len(state.Players))
 	for i, p := range state.Players {
-		g.players[i] = NewPlayerFromState(state.CardCount, p)
+		g.players[i] = NewPlayerFromState(state.CardCount, PlayerState{
+			Deck: p.Deck,
+			Hand: p.Hand,
+			Sum:  p.Sum,
+		})
 	}
 }
 

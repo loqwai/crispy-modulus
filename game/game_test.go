@@ -45,12 +45,12 @@ var _ = Describe("Game", func() {
 					g.SetState(game.State{
 						CurrentPlayer: 0,
 						CardCount:     3,
-						Players: []game.PlayerState{
-							game.PlayerState{
+						Players: []game.GamePlayerState{
+							game.GamePlayerState{
 								Hand: []int{3},
 								Deck: []int{1, 2},
 							},
-							game.PlayerState{
+							game.GamePlayerState{
 								Hand: []int{1},
 								Deck: []int{2, 3},
 							},
@@ -61,6 +61,10 @@ var _ = Describe("Game", func() {
 
 				It("Should be the second player's turn", func() {
 					Expect(g.State().CurrentPlayer).To(Equal(1))
+				})
+
+				It("Should give us the mod of p1", func() {
+					Expect(g.State().Players[0].Mod).To(Equal(0))
 				})
 			})
 		})
@@ -99,12 +103,12 @@ var _ = Describe("Game", func() {
 					g.SetState(game.State{
 						CurrentPlayer: 0,
 						CardCount:     3,
-						Players: []game.PlayerState{
-							game.PlayerState{
+						Players: []game.GamePlayerState{
+							game.GamePlayerState{
 								Hand: []int{3},
 								Deck: []int{1, 2},
 							},
-							game.PlayerState{
+							game.GamePlayerState{
 								Hand: []int{1},
 								Deck: []int{2, 3},
 							},
@@ -124,12 +128,12 @@ var _ = Describe("Game", func() {
 					g.SetState(game.State{
 						CurrentPlayer: 0,
 						CardCount:     3,
-						Players: []game.PlayerState{
-							game.PlayerState{
+						Players: []game.GamePlayerState{
+							game.GamePlayerState{
 								Hand: []int{3},
 								Deck: []int{1, 2},
 							},
-							game.PlayerState{
+							game.GamePlayerState{
 								Hand: []int{1},
 								Deck: []int{2, 3},
 							},
@@ -147,12 +151,12 @@ var _ = Describe("Game", func() {
 					g.SetState(game.State{
 						CurrentPlayer: 0,
 						CardCount:     3,
-						Players: []game.PlayerState{
-							game.PlayerState{
+						Players: []game.GamePlayerState{
+							game.GamePlayerState{
 								Hand: []int{2, 3},
 								Deck: []int{1},
 							},
-							game.PlayerState{
+							game.GamePlayerState{
 								Hand: []int{1, 2},
 								Deck: []int{3},
 							},
@@ -170,12 +174,12 @@ var _ = Describe("Game", func() {
 					g.SetState(game.State{
 						CurrentPlayer: 0,
 						CardCount:     3,
-						Players: []game.PlayerState{
-							game.PlayerState{
+						Players: []game.GamePlayerState{
+							game.GamePlayerState{
 								Hand: []int{},
 								Deck: []int{1, 2, 3},
 							},
-							game.PlayerState{
+							game.GamePlayerState{
 								Hand: []int{3},
 								Deck: []int{1, 2},
 							},
@@ -193,12 +197,12 @@ var _ = Describe("Game", func() {
 					g.SetState(game.State{
 						CurrentPlayer: 0,
 						CardCount:     3,
-						Players: []game.PlayerState{
-							game.PlayerState{
+						Players: []game.GamePlayerState{
+							game.GamePlayerState{
 								Hand: []int{-2, -3},
 								Deck: []int{1},
 							},
-							game.PlayerState{
+							game.GamePlayerState{
 								Hand: []int{-1, -2},
 								Deck: []int{3},
 							},
@@ -216,12 +220,12 @@ var _ = Describe("Game", func() {
 					g.SetState(game.State{
 						CurrentPlayer: 0,
 						CardCount:     3,
-						Players: []game.PlayerState{
-							game.PlayerState{
+						Players: []game.GamePlayerState{
+							game.GamePlayerState{
 								Hand: []int{3},
 								Deck: []int{},
 							},
-							game.PlayerState{
+							game.GamePlayerState{
 								Hand: []int{3},
 								Deck: []int{1, 2},
 							},
@@ -239,12 +243,12 @@ var _ = Describe("Game", func() {
 					g.SetState(game.State{
 						CurrentPlayer: 0,
 						CardCount:     3,
-						Players: []game.PlayerState{
-							game.PlayerState{
+						Players: []game.GamePlayerState{
+							game.GamePlayerState{
 								Hand: []int{-3, 2},
 								Deck: []int{1},
 							},
-							game.PlayerState{
+							game.GamePlayerState{
 								Hand: []int{-3, 2},
 								Deck: []int{1},
 							},
@@ -262,12 +266,12 @@ var _ = Describe("Game", func() {
 					g.SetState(game.State{
 						CurrentPlayer: 0,
 						CardCount:     3,
-						Players: []game.PlayerState{
-							game.PlayerState{
+						Players: []game.GamePlayerState{
+							game.GamePlayerState{
 								Hand: []int{3},
 								Deck: []int{},
 							},
-							game.PlayerState{
+							game.GamePlayerState{
 								Hand: []int{3},
 								Deck: []int{},
 							},
@@ -285,12 +289,12 @@ var _ = Describe("Game", func() {
 					g.SetState(game.State{
 						CurrentPlayer: 0,
 						CardCount:     3,
-						Players: []game.PlayerState{
-							game.PlayerState{
+						Players: []game.GamePlayerState{
+							game.GamePlayerState{
 								Hand: []int{3},
 								Deck: []int{1, 2},
 							},
-							game.PlayerState{
+							game.GamePlayerState{
 								Hand: []int{},
 								Deck: []int{1, 2, 3},
 							},
@@ -308,12 +312,12 @@ var _ = Describe("Game", func() {
 					g.SetState(game.State{
 						CurrentPlayer: 0,
 						CardCount:     3,
-						Players: []game.PlayerState{
-							game.PlayerState{
+						Players: []game.GamePlayerState{
+							game.GamePlayerState{
 								Hand: []int{3},
 								Deck: []int{1, 2},
 							},
-							game.PlayerState{
+							game.GamePlayerState{
 								Hand: []int{3},
 								Deck: []int{1, 2},
 							},
@@ -375,12 +379,12 @@ var _ = Describe("Game", func() {
 				BeforeEach(func() {
 					g.SetState(game.State{
 						CardCount: 3,
-						Players: []game.PlayerState{
-							game.PlayerState{
+						Players: []game.GamePlayerState{
+							game.GamePlayerState{
 								Hand: []int{1, 2, 3},
 								Deck: []int{},
 							},
-							game.PlayerState{
+							game.GamePlayerState{
 								Hand: []int{1, 2, 3},
 								Deck: []int{},
 							},
@@ -405,8 +409,8 @@ var _ = Describe("Game", func() {
 					g.SetState(game.State{
 						CardCount:     3,
 						CurrentPlayer: 0,
-						Players: []game.PlayerState{
-							game.PlayerState{
+						Players: []game.GamePlayerState{
+							game.GamePlayerState{
 								Hand: []int{2, 3},
 								Deck: []int{},
 							}},
@@ -428,12 +432,12 @@ var _ = Describe("Game", func() {
 					g.SetState(game.State{
 						CardCount:     2,
 						CurrentPlayer: 0,
-						Players: []game.PlayerState{
-							game.PlayerState{
+						Players: []game.GamePlayerState{
+							game.GamePlayerState{
 								Hand: []int{1},
 								Deck: []int{2},
 							},
-							game.PlayerState{
+							game.GamePlayerState{
 								Hand: []int{2},
 								Deck: []int{1},
 							},
@@ -455,12 +459,12 @@ var _ = Describe("Game", func() {
 					g.SetState(game.State{
 						CardCount:     1,
 						CurrentPlayer: 0,
-						Players: []game.PlayerState{
-							game.PlayerState{
+						Players: []game.GamePlayerState{
+							game.GamePlayerState{
 								Hand: []int{1},
 								Deck: []int{},
 							},
-							game.PlayerState{
+							game.GamePlayerState{
 								Hand: []int{1},
 								Deck: []int{2},
 							},
@@ -481,12 +485,12 @@ var _ = Describe("Game", func() {
 					g.SetState(game.State{
 						CardCount:     1,
 						CurrentPlayer: 0,
-						Players: []game.PlayerState{
-							game.PlayerState{
+						Players: []game.GamePlayerState{
+							game.GamePlayerState{
 								Hand: []int{1},
 								Deck: []int{2, 3},
 							},
-							game.PlayerState{
+							game.GamePlayerState{
 								Hand: []int{1, 2, 3},
 								Deck: []int{},
 							},
@@ -508,12 +512,12 @@ var _ = Describe("Game", func() {
 					g.SetState(game.State{
 						CardCount:     3,
 						CurrentPlayer: 0,
-						Players: []game.PlayerState{
-							game.PlayerState{
+						Players: []game.GamePlayerState{
+							game.GamePlayerState{
 								Hand: []int{2},
 								Deck: []int{1, 3},
 							},
-							game.PlayerState{
+							game.GamePlayerState{
 								Hand: []int{1},
 								Deck: []int{2, 3},
 							},
@@ -567,12 +571,12 @@ var _ = Describe("Game", func() {
 					g.SetState(game.State{
 						CardCount:     3,
 						CurrentPlayer: 0,
-						Players: []game.PlayerState{
-							game.PlayerState{
+						Players: []game.GamePlayerState{
+							game.GamePlayerState{
 								Hand: []int{},
 								Deck: []int{2, 3},
 							},
-							game.PlayerState{
+							game.GamePlayerState{
 								Hand: []int{1, -1},
 								Deck: []int{2, 3},
 							},

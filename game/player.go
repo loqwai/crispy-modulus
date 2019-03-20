@@ -16,6 +16,7 @@ type Player struct {
 type PlayerState struct {
 	Hand []int
 	Deck []int
+	Sum  int
 }
 
 // NewPlayer returns a new Player instance
@@ -69,6 +70,7 @@ func (p *Player) State() PlayerState {
 	return PlayerState{
 		Deck: p.deck,
 		Hand: p.hand,
+		Sum:  p.Sum(),
 	}
 }
 
