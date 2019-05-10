@@ -4,16 +4,16 @@ using System.Linq;
 using UnityEngine;
 
 public class HoldsCards : MonoBehaviour {
-  public void AddCard(HasValue card) {
+  public void AddCard(Card card) {
     card.transform.SetParent(transform);
 
     var score = cards.Select(c => c.Value).Sum();
     Debug.Log($"Now have {score} points");
   }
 
-  HasValue[] cards {
+  Card[] cards {
     get {
-      return GetComponentsInChildren<HasValue>();
+      return GetComponentsInChildren<Card>();
     }
   }
 }
