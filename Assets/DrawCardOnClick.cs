@@ -4,23 +4,17 @@ using System.Linq;
 using UnityEngine;
 
 public class DrawCardOnClick : MonoBehaviour {
-  public Transform Hand;
+  public HoldsCards Hand;
 
   void OnMouseDown() {
-    if (children.Length == 0) return;
+    if (cards.Length == 0) return;
 
-    var card = children.First();
-    card.SetParent(Hand);
+    Hand.AddCard(cards.First());
   }
 
-  Transform[] children {
+  HasValue[] cards {
     get {
-      var children = new List<Transform>();
-      foreach (Transform child in transform) {
-        children.Add(child);
-      }
-      return children.ToArray();
+      return GetComponentsInChildren<HasValue>();
     }
   }
-
 }
