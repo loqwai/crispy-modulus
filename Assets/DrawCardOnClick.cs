@@ -12,9 +12,9 @@ public class DrawCardOnClick : MonoBehaviour {
     Hand.AddCard(cards.First());
   }
 
-  HasValue[] cards {
+  Card[] cards {
     get {
-      return GetComponentsInChildren<HasValue>();
+      return GetComponentsInChildren<Card>();
     }
   }
 }

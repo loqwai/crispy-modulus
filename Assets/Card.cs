@@ -2,6 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HasValue : MonoBehaviour {
+public class Card : MonoBehaviour {
   public int Value = 0;
 }
