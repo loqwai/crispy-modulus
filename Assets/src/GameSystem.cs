@@ -11,9 +11,6 @@ namespace OurECS {
     public class GameSystem : ComponentSystem {
     protected EntityManager manager;
     protected BeginInitializationEntityCommandBufferSystem commandBufferSystem;
-    protected override void OnCreate() {
-        manager = World.Active.GetOrCreateManager<EntityManager>();
-    }
         
     protected void Start(ref Game game) {
       var entities = new NativeArray<Entity>(game.numberOfPlayers, Allocator.Temp);
