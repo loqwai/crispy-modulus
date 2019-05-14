@@ -235,12 +235,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_SerializedData:
     CardCount: 0
-    CurrentPlayer: 0
     NumberOfPlayers: 0
-    WhoIsWinning: 0
-    isDone: 0
-    shouldStart: 1
     mod: 0
+    isDone: 0
+    shouldStart: 0
 --- !u!114 &461150176
 MonoBehaviour:
   m_ObjectHideFlags: 0

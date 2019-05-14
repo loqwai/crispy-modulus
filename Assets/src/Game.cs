@@ -6,12 +6,12 @@ namespace OurECS {
 [Serializable]
     public struct Game : IComponentData
     {
-        public int CardCount;
-        public int CurrentPlayer;
-        public int NumberOfPlayers;    
-        public int WhoIsWinning;
+        public int cardCount;
+        public int numberOfPlayers;
+        public int mod;
+        public Entity currentPlayer;
+        public Entity whoIsWinning;         
         public Boolean isDone;
         public Boolean shouldStart;
-        public int mod;
     }
 }
