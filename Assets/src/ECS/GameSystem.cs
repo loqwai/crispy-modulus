@@ -33,12 +33,10 @@ namespace OurECS {
 
       var game = GetSingleton<Game>();      
       if (game.action == Game.Actions.Start) {
-        game.action = Game.Actions.DealNewDeck;            
+        game.action = Game.Actions.Nothing;
+        SetSingleton(game); 
         return;
-      }
-      
-      game.action = Game.Actions.Nothing;
-      SetSingleton(game);
+      }      
     }
   }
 }

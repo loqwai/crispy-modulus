@@ -9,7 +9,7 @@ using System.Collections;
 using System.Collections.Generic;
 namespace OurECS {
 
-
+  [UpdateAfter(typeof(CardSystem))]
   public class PlayerSystem : ComponentSystem {
     System.Random random;        
 
@@ -47,10 +47,8 @@ namespace OurECS {
       if(!HasSingleton<Game>()) return;
 
       var game = GetSingleton<Game>();      
-      if (game.action == Game.Actions.SetupPlayers) {
+      if (game.action == Game.Actions.Start) {
           Start(game);          
-          game.action = Game.Actions.Nothing;
-          SetSingleton(game);  
       }
     }
   }

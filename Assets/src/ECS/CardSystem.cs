@@ -6,24 +6,21 @@ using Unity.Collections;
 
 using OurECS;
 namespace OurECS {
-  [UpdateAfter(typeof(GameSystem))]
+  [UpdateBefore(typeof(GameSystem))]
   public class CardSystem : ComponentSystem {            
     protected EntityArchetype cardArchetype;
-
-    void onCreate() {
-      cardArchetype = EntityManager.CreateArchetype(typeof(Card));
-    }
+    
     protected void openANewDeckJustLikeVegas() {
-      Entities.ForEach((Entity e, ref Card c) => {
-         PostUpdateCommands.DestroyEntity(e);
-      });        
+      var query = GetEntityQuery(typeof(Card));
+      EntityManager.DestroyEntity(query);
     }
 
     protected void dealCards(Game game) {
-      Entities.ForEach( (Entity e, ref Player p) => {
+      var cardArchetype = EntityManager.CreateArchetype(typeof(Card));
+      Entities.ForEach((Entity e, ref Player p) => {
         for(int i = 0; i < game.cardCount; i++) {
           PostUpdateCommands.CreateEntity(cardArchetype);   
-          PostUpdateCommands.AddComponent(new Card{value=i, faceUp=false, round=0, owner=e});           
+          PostUpdateCommands.SetComponent(new Card{value=i, faceUp=false, owner=e});       
         }
       });      
     }
@@ -32,11 +29,9 @@ namespace OurECS {
       if(!HasSingleton<Game>()) return;
 
       var game = GetSingleton<Game>();      
-      if (game.action == Game.Actions.DealNewDeck) {
+      if (game.action == Game.Actions.Start) {
           openANewDeckJustLikeVegas();
-          dealCards(game);
-          game.action = Game.Actions.SetupPlayers;
-          SetSingleton(game);          
+          dealCards(game);          
       }            
     }
   }
