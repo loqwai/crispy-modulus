@@ -9,14 +9,19 @@ namespace OurECS {
   public class GameSystem : ComponentSystem {        
 
     void onCreate() {
+      //this has to happen first, or SetSingleton will silently fail
       EntityManager.CreateEntity(typeof(Game));
-      SetSingleton(new Game{});
+      SetSingleton(new Game{
+        action=Game.Actions.Nothing,
+        numberOfPlayers=2,
+        mod=3
+      });
     }
 
-    protected void Start(ref Game game) {
-      var playerQuery = GetEntityQuery(typeof(Player));
-      // var players = playerQuery.ToComponentDataArray<Player>(Allocator.TempJob);   
-      // players.Dispose();      
+    protected void Start(ref Game g) {
+      Entities.ForEach((ref Player p) => {
+        p.action = Player.Actions.NewGame;
+      });      
     }
     protected void initializeGameEntity() {}
 
@@ -27,8 +32,7 @@ namespace OurECS {
       }
       
       game.action = Game.Actions.Nothing;
-      SetSingleton(game);      
-
+      SetSingleton(game);
     }
   }
 }
