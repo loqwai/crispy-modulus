@@ -55,22 +55,32 @@ namespace OurECS {
         PostUpdateCommands.SetComponent(isThisYourCard);        
     }    
 
-    // protected void Steal(Entity playerEntity, int value, int round) {                    
-    //     Card cardToSteal;
-    //     Entities.ForEach( (ref Card c) => {
-    //         if(c.owner == playerEntity) return;
-    //         if(!c.faceUp) return;
-    //         if(value == c.value) {
-    //             cardToSteal = c;
-    //             return;
-    //         }
-    //     }); 
-    //     var stolenCard = EntityManager.Instantiate(cardToSteal);
-    //     stolenCard.round++;
-    //     stolenCard.owner = playerEntity;        
-    //     PostUpdateCommands.CreateEntity(cardArchetype);   
-    //     PostUpdateCommands.SetComponent(stolenCard);        
-    // }
+    protected void Steal(Player player, int value, int currentRound) {
+        var inefficient = new List<Tuple<Entity, Card>>();
+        
+        //jesus.
+        Entities.ForEach( (Entity e, ref Player owner, ref Round r, ref Card c) => {
+            if(c.value != value) return; //wrong one.
+            if(r.number != currentRound) return; //this is history
+            if(player.Equals(owner)) return; //can't steal my own shit;            
+            if(!c.faceUp) return; //can't steal face down cards
+            //this is the worst;    
+            inefficient.Add(Tuple.Create(e, c));
+        }); 
+
+        if(inefficient.Count == 0) return;       
+        
+        var index = random.Next(0, inefficient.Count);        
+
+        var pair = inefficient[index];   
+        var cardEntity = pair.Item1;
+        var isThisYourCard = pair.Item2;     
+
+        PostUpdateCommands.CreateEntity(cardArchetype);                        
+        PostUpdateCommands.SetComponent(player);        
+        PostUpdateCommands.SetComponent(new Round{number = currentRound++});        
+        PostUpdateCommands.SetComponent(isThisYourCard);        
+    }  
 
     protected override void OnUpdate() {
       if(!HasSingleton<Game>()) return;
