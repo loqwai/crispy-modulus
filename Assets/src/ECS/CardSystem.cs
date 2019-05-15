@@ -14,11 +14,9 @@ namespace OurECS {
       cardArchetype = EntityManager.CreateArchetype(typeof(Card));
     }
     protected void openANewDeckJustLikeVegas() {
-      var query = GetEntityQuery(typeof(Card));
-      var cardEntities = query.ToEntityArray(Allocator.TempJob);
-      foreach(var e in cardEntities ) {
-        PostUpdateCommands.DestroyEntity(e);
-      }      
+      Entities.ForEach((Entity e, ref Card c) => {
+         PostUpdateCommands.DestroyEntity(e);
+      });        
     }
 
     protected void dealCards(Game game) {
@@ -34,9 +32,11 @@ namespace OurECS {
       if(!HasSingleton<Game>()) return;
 
       var game = GetSingleton<Game>();      
-      if (game.action == Game.Actions.Start) {
+      if (game.action == Game.Actions.DealNewDeck) {
           openANewDeckJustLikeVegas();
-          dealCards(game);          
+          dealCards(game);
+          game.action = Game.Actions.SetupPlayers;
+          SetSingleton(game);          
       }            
     }
   }

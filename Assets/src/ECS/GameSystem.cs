@@ -15,15 +15,17 @@ namespace OurECS {
         action=Game.Actions.Nothing,
         numberOfPlayers=2,
         mod=3,
-        cardCount=10
+        cardCount=10,
+        round=0
       });
     }
 
-    protected void Start(ref Game g) {
+    protected void Start(ref Game g) {            
       Entities.ForEach((ref Player p) => {
-        p.action = Player.Actions.NewGame;
+        p.action = Player.Actions.Draw;
       });      
     }
+
     protected void initializeGameEntity() {}
 
     protected override void OnUpdate() {
@@ -31,7 +33,7 @@ namespace OurECS {
 
       var game = GetSingleton<Game>();      
       if (game.action == Game.Actions.Start) {
-          Start(ref game);          
+        game.action = Game.Actions.DealNewDeck;            
       }
       
       game.action = Game.Actions.Nothing;

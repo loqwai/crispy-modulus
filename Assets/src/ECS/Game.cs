@@ -9,15 +9,17 @@ namespace OurECS {
         public int cardCount;
         public int numberOfPlayers;
         public int mod;
+        public int round;
         public Entity currentPlayer;
         public Entity whoIsWinning;         
         public Boolean isDone;        
         public enum Actions {
             Nothing,
             Start,
+            DealNewDeck,
+            SetupPlayers,
             Run,            
-        }
-        //This is clearly wrong, because I'm just relying on initialization to set action=nothing.
+        }        
         public Actions action;                      
     }
 }
