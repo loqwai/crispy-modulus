@@ -237,6 +237,7 @@ MonoBehaviour:
     cardCount: 10
     numberOfPlayers: 2
     mod: 5
+    round: 0
     isDone: 0
     action: 0
 --- !u!114 &461150176
@@ -296,7 +297,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_SerializedData:
-    name: Lafayette
     action: 0
     cardCount: 0
 --- !u!114 &1668269236
@@ -356,7 +356,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_SerializedData:
-    name: Hamilton
     action: 0
     cardCount: 0
 --- !u!114 &2138882148

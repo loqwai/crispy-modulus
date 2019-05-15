@@ -4,9 +4,8 @@ using Unity.Collections;
 
 namespace OurECS {
     [Serializable]
-    public struct Card : IComponentData
+    public struct Round : IComponentData
     {
-        public int value;
-        public Boolean faceUp;        
+        public int number;
     }
 }
