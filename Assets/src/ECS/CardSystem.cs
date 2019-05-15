@@ -22,10 +22,10 @@ namespace OurECS {
     }
 
     protected void dealCards(Game game) {
-      Entities.ForEach( (ref Player p) => {
+      Entities.ForEach( (Entity e, ref Player p) => {
         for(int i = 0; i < game.cardCount; i++) {
           PostUpdateCommands.CreateEntity(cardArchetype);   
-          PostUpdateCommands.AddComponent(new Card{value=i});       
+          PostUpdateCommands.AddComponent(new Card{value=i, faceUp=false, round=0, owner=e});           
         }
       });      
     }

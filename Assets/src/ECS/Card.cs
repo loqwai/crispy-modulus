@@ -6,6 +6,9 @@ namespace OurECS {
     [Serializable]
     public struct Card : IComponentData
     {
-        public int value;   
+        public int value;
+        public Boolean faceUp;
+        public int round;
+        public Entity owner;   
     }
 }
