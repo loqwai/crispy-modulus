@@ -8,25 +8,30 @@ using Unity.Entities;
 
 using OurECS;
 namespace OurECS {
-    public class GameSystem : ComponentSystem {
+  public class GameSystem : ComponentSystem {
     protected EntityManager manager;
     protected BeginInitializationEntityCommandBufferSystem commandBufferSystem;
-        
-    protected void Start(ref Game game) {
-      var entities = new NativeArray<Entity>(game.numberOfPlayers, Allocator.Temp);
-      for (int i = 0; i < game.numberOfPlayers; i++) {
-        entities[i] = PostUpdateCommands.Instantiate<Player>();
-        PostUpdateCommands.SetComponent(entities[i], new Player());
-      }  
-        game.shouldStart = false;        
+
+    protected override void OnCreate() {
     }
 
+    protected void Start(ref Game game) {
+      var playerQuery = GetEntityQuery(typeof(Player));
+      using (var players = playerQuery.ToComponentDataArray<Player>(Allocator.TempJob)) {
+        foreach (var p in players) {
+          Debug.Log("found a player");
+        }
+      }
+
+
+      game.shouldStart = false;
+    }
     protected override void OnUpdate() {
       Entities.ForEach((Entity e, ref Game game) => {
-        if(game.shouldStart) {
+        if (game.shouldStart) {
           Start(ref game);
         }
       });
-      }        
     }
-    }
+  }
+}

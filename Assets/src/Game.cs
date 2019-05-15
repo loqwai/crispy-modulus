@@ -12,6 +12,6 @@ namespace OurECS {
         public Entity currentPlayer;
         public Entity whoIsWinning;         
         public Boolean isDone;
-        public Boolean shouldStart;
+        public Boolean shouldStart;                        
     }
 }
