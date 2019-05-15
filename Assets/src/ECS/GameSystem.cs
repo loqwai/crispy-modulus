@@ -34,6 +34,7 @@ namespace OurECS {
       var game = GetSingleton<Game>();      
       if (game.action == Game.Actions.Start) {
         game.action = Game.Actions.DealNewDeck;            
+        return;
       }
       
       game.action = Game.Actions.Nothing;

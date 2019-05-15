@@ -6,7 +6,7 @@ using Unity.Collections;
 
 using OurECS;
 namespace OurECS {
-  [UpdateBefore(typeof(GameSystem))]
+  [UpdateAfter(typeof(GameSystem))]
   public class CardSystem : ComponentSystem {            
     protected EntityArchetype cardArchetype;
 
