@@ -30,7 +30,6 @@ namespace OurECS {
       if(!HasSingleton<Game>()) return;
 
       var game = GetSingleton<Game>();      
-      
       if (game.action == Game.Actions.Start) {
           Start(ref game);          
       }
