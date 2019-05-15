@@ -5,9 +5,13 @@ using Unity.Collections;
 [Serializable]
 public struct Player : IComponentData
 {
-    // enum action {
-    //     Draw,
-    //     Steal
-    // }
+    public enum Actions {
+        Nothing,
+        Draw,
+        Steal,
+        NewGame,
+    }
+    
+    public Actions action;
     public int cardCount;
 }

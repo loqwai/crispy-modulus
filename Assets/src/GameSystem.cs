@@ -2,36 +2,33 @@ using Unity.Entities;
 using Unity.Mathematics;
 using UnityEngine;
 using Unity.Jobs;
-using Unity.Entities;
 using Unity.Collections;
-using Unity.Entities;
 
 using OurECS;
 namespace OurECS {
-  public class GameSystem : ComponentSystem {
-    protected EntityManager manager;
-    protected BeginInitializationEntityCommandBufferSystem commandBufferSystem;
+  public class GameSystem : ComponentSystem {        
 
-    protected override void OnCreate() {
+    void onCreate() {
+      EntityManager.CreateEntity(typeof(Game));
+      SetSingleton(new Game{});
     }
 
     protected void Start(ref Game game) {
       var playerQuery = GetEntityQuery(typeof(Player));
-      using (var players = playerQuery.ToComponentDataArray<Player>(Allocator.TempJob)) {
-        foreach (var p in players) {
-          Debug.Log("found a player");
-        }
-      }
-
-
-      game.shouldStart = false;
+      // var players = playerQuery.ToComponentDataArray<Player>(Allocator.TempJob);   
+      // players.Dispose();      
     }
+    protected void initializeGameEntity() {}
+
     protected override void OnUpdate() {
-      Entities.ForEach((Entity e, ref Game game) => {
-        if (game.shouldStart) {
-          Start(ref game);
-        }
-      });
+      var game = GetSingleton<Game>();      
+      if (game.action == Game.Actions.Start) {
+          Start(ref game);          
+      }
+      
+      game.action = Game.Actions.Nothing;
+      SetSingleton(game);      
+
     }
   }
 }
