@@ -10,12 +10,13 @@ using System.Collections.Generic;
 namespace OurECS {
 
   [UpdateAfter(typeof(CardSystem))]
+  [UpdateBefore(typeof(GameSystem))]
   public class PlayerSystem : ComponentSystem {
-    System.Random random;        
-
-    void onCreate() {
-        random = new System.Random((int)DateTime.Now.Ticks);
-    }
+    System.Random random;
+    
+    protected override void OnCreateManager () {
+      random = new System.Random((int)DateTime.Now.Ticks);
+    }    
 
     protected void Start(Game g) {
       Entities.ForEach((Entity e, ref Player p) => {
@@ -35,11 +36,10 @@ namespace OurECS {
         }); 
         if(inefficient.Count == 0) return;       
         var index = random.Next(0, inefficient.Count);        
-        return;
         var cardEntity = inefficient[index];        
         var isThisYourCard = EntityManager.GetComponentData<Card>(cardEntity);
         isThisYourCard.round++;
-        isThisYourCard.faceUp = false;
+        isThisYourCard.faceUp = true;
         PostUpdateCommands.SetComponent(cardEntity, isThisYourCard);        
     }
 

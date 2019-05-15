@@ -16,8 +16,6 @@ namespace OurECS {
         public enum Actions {
             Nothing,
             Start,
-            DealNewDeck,
-            SetupPlayers,
             Run,            
         }        
         public Actions action;                      
