@@ -16,7 +16,7 @@ namespace OurECS {
          EntityManager.CreateArchetype(
            typeof(Card),
            typeof(Player),
-           typeof(Round));
+           typeof(Round));           
     }
 
     protected void openANewDeckJustLikeVegas() {
@@ -41,7 +41,7 @@ namespace OurECS {
       var game = GetSingleton<Game>();
       if (game.action == Game.Actions.Start) {
         openANewDeckJustLikeVegas();
-        dealCards(game);
+        dealCards(game);        
       }
     }
   }

@@ -30,9 +30,8 @@ namespace OurECS {
 
       if (game.action == Game.Actions.Start) {
         Start(game);
-        game.action = Game.Actions.Round;
       }
-
+      game.action = Game.Actions.Round;      
       SetSingleton(game);
       return;
     }

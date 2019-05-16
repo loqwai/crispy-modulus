@@ -11,7 +11,6 @@ namespace OurECS {
 
   [UpdateAfter(typeof(CardSystem))]
   [UpdateBefore(typeof(GameSystem))]
-
   public class PlayerSystem : ComponentSystem {
     System.Random random;
     EntityArchetype cardArchetype;
@@ -27,15 +26,21 @@ namespace OurECS {
          );
       }
 
-      protected void Start(Game g) {
+      protected void Start(Game g) {        
         Entities.ForEach((Entity e, ref Player p) => {
+          if(!EntityManager.HasComponent<Round>(e)){
+            PostUpdateCommands.AddComponent(e, new Round());          
+            return;
+          }
           Draw(e, p, g.round);
         });
       }
 
       protected void Draw(Entity pe, Player player, int currentRound) {
         var inefficient = new List<Tuple<Entity, Card>>();
-
+        var playerRound = EntityManager.GetComponentData<Round>(pe);
+        if(playerRound.number > currentRound) return;
+        playerRound.number++;
         //jesus.
         Entities.ForEach((Entity e, ref Player owner, ref Round r, ref Card c) => {
           if (!player.Equals(owner)) return;
@@ -52,11 +57,14 @@ namespace OurECS {
         var isThisYourCard = pair.Item2;
         player.cardCount++;
         player.cardSum += isThisYourCard.value;
+        playerRound.number++;
 
         isThisYourCard.faceUp = true;
+        PostUpdateCommands.SetComponent(pe, player);
+        PostUpdateCommands.SetComponent(pe, playerRound);
         PostUpdateCommands.CreateEntity(cardArchetype);
         PostUpdateCommands.SetComponent(player);
-        PostUpdateCommands.SetComponent(new Round { number = currentRound++ });
+        PostUpdateCommands.SetComponent(playerRound);
         PostUpdateCommands.SetComponent(isThisYourCard);        
       }
 
@@ -90,8 +98,6 @@ namespace OurECS {
       }
 
     protected override void OnUpdate() {
-      if (!HasSingleton<Game>()) return;
-
       var game = GetSingleton<Game>();
       if (game.action == Game.Actions.Start) {
         Start(game);
