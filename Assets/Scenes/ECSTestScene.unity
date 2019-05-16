@@ -234,9 +234,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_SerializedData:
-    cardCount: 0
-    numberOfPlayers: 0
-    mod: 0
+    cardCount: 10
+    numberOfPlayers: 2
+    mod: 5
     round: 0
     isDone: 0
     action: 0

@@ -35,12 +35,13 @@ namespace OurECS {
       protected void Draw(Entity pe, Player player) {
         var faceDownCards = new List<Entity>();
         
-          var results = GetEntityQuery(typeof(Player), typeof(Card), typeof(CardFaceDown));
-          foreach(Entity e in results.ToEntityArray(Allocator.TempJob)){
+          var results = GetEntityQuery(typeof(Player), typeof(Card), typeof(CardFaceDown)).ToEntityArray(Allocator.TempJob);
+          foreach(Entity e in results){
             var otherPlayer = EntityManager.GetComponentData<Player>(e);
             if(!player.Equals( otherPlayer)) return;
             faceDownCards.Add(e);
         }        
+        results.Dispose();
         faceDownCards.Count();       
       }
 
