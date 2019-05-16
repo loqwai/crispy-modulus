@@ -16,7 +16,7 @@ namespace OurECS {
         public enum Actions {
             Nothing,
             Start,
-            Run,            
+            Round,            
         }        
         public Actions action;                      
     }

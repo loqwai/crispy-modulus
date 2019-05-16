@@ -14,6 +14,7 @@ namespace OurECS {
   public class PlayerSystem : ComponentSystem {
     System.Random random;
     EntityArchetype cardArchetype;
+
     protected override void OnCreateManager () {
       random = new System.Random((int)DateTime.Now.Ticks);
        cardArchetype = EntityManager.CreateArchetype(
@@ -24,13 +25,12 @@ namespace OurECS {
     }    
 
     protected void Start(Game g) {
-      Entities.ForEach((ref Player p) => {
-          Draw(p, g.round);
-          p.cardCount++;
+      Entities.ForEach((Entity e, ref Player p) => {
+          Draw(e, p, g.round);
       });      
     }
   
-    protected void Draw(Player player, int currentRound) {
+    protected void Draw(Entity pe, Player player, int currentRound) {
         var inefficient = new List<Tuple<Entity, Card>>();
         
         //jesus.
@@ -42,20 +42,23 @@ namespace OurECS {
             inefficient.Add(Tuple.Create(e, c));
         }); 
 
-        if(inefficient.Count == 0) return;       
-        
+        if(inefficient.Count == 0) return;               
         var index = random.Next(0, inefficient.Count);        
         var pair = inefficient[index];   
         var cardEntity = pair.Item1;
         var isThisYourCard = pair.Item2;     
+        player.cardCount++;
+        player.cardSum+=isThisYourCard.value;
+        
         isThisYourCard.faceUp = true;
         PostUpdateCommands.CreateEntity(cardArchetype);                        
         PostUpdateCommands.SetComponent(player);        
         PostUpdateCommands.SetComponent(new Round{number = currentRound++});        
         PostUpdateCommands.SetComponent(isThisYourCard);        
+        PostUpdateCommands.SetComponent(pe, player);        
     }    
 
-    protected void Steal(Player player, int value, int currentRound) {
+    protected void Steal(Entity pe, Player player, int value, int currentRound) {
         var inefficient = new List<Tuple<Entity, Card>>();
         
         //jesus.
@@ -75,11 +78,13 @@ namespace OurECS {
         var pair = inefficient[index];   
         var cardEntity = pair.Item1;
         var isThisYourCard = pair.Item2;     
-
+        player.cardCount++;
+        player.cardSum -= isThisYourCard.value;
         PostUpdateCommands.CreateEntity(cardArchetype);                        
         PostUpdateCommands.SetComponent(player);        
         PostUpdateCommands.SetComponent(new Round{number = currentRound++});        
         PostUpdateCommands.SetComponent(isThisYourCard);        
+        PostUpdateCommands.SetComponent(pe, player);        
     }  
 
     protected override void OnUpdate() {
