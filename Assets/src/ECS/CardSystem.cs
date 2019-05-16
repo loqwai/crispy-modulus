@@ -16,7 +16,7 @@ namespace OurECS {
          EntityManager.CreateArchetype(
            typeof(Card),
            typeof(Player),
-           typeof(Round));           
+           typeof(CardFaceDown));        
     }
 
     protected void openANewDeckJustLikeVegas() {
@@ -25,13 +25,12 @@ namespace OurECS {
     }
 
     protected void dealCards(Game game) {
-
-      Entities.ForEach((Entity e, ref Player p) => {
+      
+      Entities.ForEach((ref Player p) => {
         for (int i = 0; i < game.cardCount; i++) {
           PostUpdateCommands.CreateEntity(cardInPlayArchetype);
           PostUpdateCommands.SetComponent(new Card { value = i, faceUp= false});
           PostUpdateCommands.SetComponent(p);
-          PostUpdateCommands.SetComponent(new Round{number=game.round});
         }
       });
     }
