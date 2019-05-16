@@ -1,5 +1,5 @@
 using Unity.Entities;
 using Unity.Transforms;
 using UnityEngine;
-
-public class PlayerProxy : ComponentDataProxy<Player> { }
+using OurECS;
+public class PlayerProxy : ComponentDataProxy<Player> {}

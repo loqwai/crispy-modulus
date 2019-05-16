@@ -10,7 +10,8 @@ namespace OurECS {
   public class CardSystem : ComponentSystem {
     protected EntityArchetype cardInPlayArchetype;
 
-    protected override void OnCreateManager() {
+    protected override void OnCreateManager() {      
+      RequireSingletonForUpdate<Game>();      
       cardInPlayArchetype =
          EntityManager.CreateArchetype(
            typeof(Card),
@@ -36,8 +37,7 @@ namespace OurECS {
     }
 
     protected override void OnUpdate() {
-      if (!HasSingleton<Game>()) return;
-
+      Debug.Log("ECS system online");
       var game = GetSingleton<Game>();
       if (game.action == Game.Actions.Start) {
         openANewDeckJustLikeVegas();
