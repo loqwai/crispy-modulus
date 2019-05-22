@@ -60,6 +60,7 @@ namespace OurECS {
       }
 
     protected override void OnUpdate() {
+      return;
       var game = GetSingleton<Game>();
       if (game.action == Game.Actions.Start) {
         Start(game);

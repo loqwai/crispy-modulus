@@ -17,7 +17,8 @@ namespace OurECS {
             Nothing,
             Start,
             Deal,
-            Dealt,
+            DrawUntilUnequalMods,
+            FindStartingPlayer,
             Round,            
         }        
         public Actions action;                      

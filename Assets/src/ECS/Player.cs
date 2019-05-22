@@ -15,4 +15,5 @@ public struct Player : IComponentData
     public Actions action;
     public int cardCount;
     public int cardSum;
+    public int mod;
 }

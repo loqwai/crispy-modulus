@@ -35,13 +35,6 @@ namespace OurECS {
     }
 
     protected override void OnUpdate() {
-      var game = GetSingleton<Game>();
-      if (game.action == Game.Actions.Deal) {
-        openANewDeckJustLikeVegas();
-        dealCards(game);
-        game.action = Game.Actions.Dealt; 
-        SetSingleton(game);       
-      }
     }
   }
 }
