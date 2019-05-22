@@ -239,7 +239,7 @@ MonoBehaviour:
     mod: 5
     round: 0
     isDone: 0
-    action: 0
+    action: 1
 --- !u!114 &461150176
 MonoBehaviour:
   m_ObjectHideFlags: 0

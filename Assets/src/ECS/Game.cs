@@ -9,9 +9,7 @@ namespace OurECS {
         public int cardCount;
         public int playerCount;
         public int mod;
-        public int round;
-        public Entity currentPlayer;
-        public Entity whoIsWinning;         
+        public int round;    
         public Boolean isDone;        
         public enum Actions {
             Nothing,

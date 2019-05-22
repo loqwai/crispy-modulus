@@ -96,13 +96,15 @@ namespace OurECS {
     
     protected void FindStartingPlayer(Game game) {
       var maxMod = -1;
+      Entity worstPlayer = new Entity();
       Entities.ForEach((Entity e, ref Player p) => {
         var mod = p.mod;
         if (mod > maxMod) {
           maxMod = mod;
-          game.currentPlayer = e;
+          worstPlayer = e;
         }
-      });
+      });        
+      PostUpdateCommands.AddComponent<ActivePlayer>(worstPlayer,new ActivePlayer());
     }
 
     protected override void OnUpdate() {
@@ -135,7 +137,6 @@ namespace OurECS {
           game.action = Game.Actions.Nothing;
           SetSingleton(game);
           break;
-
       }
     }
   }
