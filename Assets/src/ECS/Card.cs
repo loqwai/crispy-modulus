@@ -6,7 +6,7 @@ namespace OurECS {
     [Serializable]
     public struct Card : IComponentData
     {
-        public int value;
-        public Boolean faceUp;        
+        public int Value;
+        public Entity OriginalPlayer;
     }
 }

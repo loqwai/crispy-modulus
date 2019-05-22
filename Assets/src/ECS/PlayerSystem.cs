@@ -1,17 +1,15 @@
 
+using UnityEngine;
 using Unity.Entities;
 using Unity.Mathematics;
-using Unity.Jobs;
 using Unity.Collections;
 using OurECS;
-using System.Linq;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 namespace OurECS {
 
   [UpdateAfter(typeof(CardSystem))]
-  [UpdateBefore(typeof(GameSystem))]
   public class PlayerSystem : ComponentSystem {
     System.Random random;
     EntityArchetype cardArchetype;
@@ -28,23 +26,36 @@ namespace OurECS {
 
       protected void Start(Game g) {        
         Entities.ForEach((Entity e, ref Player p) => {         
-          Draw(e, p);
+          Draw(e, ref p);
         });
       }
 
-      protected void Draw(Entity pe, Player player) {
-        var faceDownCards = new List<Entity>();
-        
-          var results = GetEntityQuery(typeof(Player), typeof(Card), typeof(CardFaceDown)).ToEntityArray(Allocator.TempJob);
-          foreach(Entity e in results){
-            var otherPlayer = EntityManager.GetComponentData<Player>(e);
-            if(!player.Equals( otherPlayer)) return;
-            faceDownCards.Add(e);
-        }        
-        results.Dispose();
-        faceDownCards.Count();       
-      }
+      protected void Draw(Entity pe, ref Player player) {
+        var query = 
+          GetEntityQuery(
+            typeof(Card),
+            typeof(CardFacedDown)
+          );
+          var ourCards = new List<Entity>();
+          var cards = query.ToComponentDataArray<Card>(Allocator.TempJob);
+          var entities = query.ToEntityArray(Allocator.TempJob);          
+          
+          for(int i = 0; i < cards.Length; i++) {
+            if(cards[i].OriginalPlayer != pe) continue;
+            ourCards.Add(entities[i]);
+          }
 
+          if(ourCards.Count != 0){
+            var cardToDraw = random.Next(0, ourCards.Count);
+            var drawnCard = ourCards[cardToDraw];
+            PostUpdateCommands.RemoveComponent<CardFacedDown>(drawnCard);
+            player.cardCount++;
+            player.cardSum += cards[cardToDraw].Value;
+          }          
+          cards.Dispose();
+          entities.Dispose();
+          
+      }      
       protected void Steal(Entity pe, Player player, int value, int currentRound) {      
       }
 

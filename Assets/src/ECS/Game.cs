@@ -7,7 +7,7 @@ namespace OurECS {
     public struct Game : IComponentData
     {
         public int cardCount;
-        public int numberOfPlayers;
+        public int playerCount;
         public int mod;
         public int round;
         public Entity currentPlayer;
@@ -16,6 +16,8 @@ namespace OurECS {
         public enum Actions {
             Nothing,
             Start,
+            Deal,
+            Dealt,
             Round,            
         }        
         public Actions action;                      

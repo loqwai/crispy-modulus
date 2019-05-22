@@ -6,7 +6,7 @@ using Unity.Collections;
 
 using OurECS;
 namespace OurECS {
-  [UpdateBefore(typeof(GameSystem))]
+  [UpdateAfter(typeof(GameSystem))]
   public class CardSystem : ComponentSystem {
     protected EntityArchetype cardInPlayArchetype;
 
@@ -15,8 +15,8 @@ namespace OurECS {
       cardInPlayArchetype =
          EntityManager.CreateArchetype(
            typeof(Card),
-           typeof(Player),
-           typeof(CardFaceDown));        
+           typeof(CardFacedDown)
+        );         
     }
 
     protected void openANewDeckJustLikeVegas() {
@@ -26,21 +26,21 @@ namespace OurECS {
 
     protected void dealCards(Game game) {
       
-      Entities.ForEach((ref Player p) => {
-        for (int i = 0; i < game.cardCount; i++) {
-          PostUpdateCommands.CreateEntity(cardInPlayArchetype);
-          PostUpdateCommands.SetComponent(new Card { value = i, faceUp= false});
-          PostUpdateCommands.SetComponent(p);
+      Entities.ForEach((Entity pe, ref Player p) => {
+        for (int i = 1; i < game.cardCount+1; i++) {
+          var e =PostUpdateCommands.CreateEntity(cardInPlayArchetype);
+          PostUpdateCommands.SetComponent(e, new Card { Value = i, OriginalPlayer=pe});
         }
       });
     }
 
     protected override void OnUpdate() {
-      Debug.Log("ECS system online");
       var game = GetSingleton<Game>();
-      if (game.action == Game.Actions.Start) {
+      if (game.action == Game.Actions.Deal) {
         openANewDeckJustLikeVegas();
-        dealCards(game);        
+        dealCards(game);
+        game.action = Game.Actions.Dealt; 
+        SetSingleton(game);       
       }
     }
   }

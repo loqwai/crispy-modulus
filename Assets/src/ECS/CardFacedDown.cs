@@ -4,5 +4,8 @@ using Unity.Collections;
 
 namespace OurECS {
     [Serializable]
-    public struct CardFaceDown : IComponentData {}
+    public struct CardFacedDown : IComponentData
+    {
+        // int i;
+    }
 }

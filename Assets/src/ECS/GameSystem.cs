@@ -11,7 +11,14 @@ namespace OurECS {
       RequireSingletonForUpdate<Game>();
     }
 
-    protected void Start(Game game) {      
+    protected void Start(Game game) {
+      var query = GetEntityQuery(typeof(Player));
+      EntityManager.DestroyEntity(query);
+      
+      for(int i = 0; i < game.playerCount; i++) {
+        var e = PostUpdateCommands.CreateEntity();
+        PostUpdateCommands.AddComponent<Player>(e, new Player());
+      }      
     }
     
     protected void findStartingPlayer(Game game) {
@@ -31,7 +38,7 @@ namespace OurECS {
       if (game.action == Game.Actions.Start) {
         Start(game);
       }
-      game.action = Game.Actions.Round;      
+      game.action = Game.Actions.Deal;      
       SetSingleton(game);
       return;
     }
