@@ -11,8 +11,13 @@ public struct Player : IComponentData
         Steal,
         NewGame,
     }
-    
+    public enum Errors {
+        Nothing,
+        CantDraw,
+        CantSteal
+    };
     public Actions action;
+    public Errors error;
     public int cardCount;
     public int cardSum;
     public int mod;

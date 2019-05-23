@@ -9,62 +9,32 @@ using System.Collections;
 using System.Collections.Generic;
 namespace OurECS {
 
-  [UpdateAfter(typeof(CardSystem))]
+  [UpdateAfter(typeof(GameSystem))]
   public class PlayerSystem : ComponentSystem {
     System.Random random;
-    EntityArchetype cardArchetype;
+    EntityArchetype activePlayerArchetype;
 
     protected override void OnCreateManager() {
       RequireSingletonForUpdate<Game>();
-
-        random = new System.Random((int)DateTime.Now.Ticks);
-        cardArchetype = EntityManager.CreateArchetype(
-           typeof(Card),
-           typeof(Player)
-         );
-      }
-
-      protected void Start(Game g) {        
-        Entities.ForEach((Entity e, ref Player p) => {         
-          Draw(e, ref p);
-        });
-      }
-
-      protected void Draw(Entity pe, ref Player player) {
-        var query = 
-          GetEntityQuery(
-            typeof(Card),
-            typeof(CardFacedDown)
-          );
-          var ourCards = new List<Entity>();
-          var cards = query.ToComponentDataArray<Card>(Allocator.TempJob);
-          var entities = query.ToEntityArray(Allocator.TempJob);          
-          
-          for(int i = 0; i < cards.Length; i++) {
-            if(cards[i].OriginalPlayer != pe) continue;
-            ourCards.Add(entities[i]);
-          }
-
-          if(ourCards.Count != 0){
-            var cardToDraw = random.Next(0, ourCards.Count);
-            var drawnCard = ourCards[cardToDraw];
-            PostUpdateCommands.RemoveComponent<CardFacedDown>(drawnCard);
-            player.cardCount++;
-            player.cardSum += cards[cardToDraw].Value;
-          }          
-          cards.Dispose();
-          entities.Dispose();
-          
-      }      
-      protected void Steal(Entity pe, Player player, int value, int currentRound) {      
-      }
+      RequireForUpdate(GetEntityQuery(typeof(Player), typeof(ActivePlayer)));
+      random = new System.Random((int)DateTime.Now.Ticks);
+      
+      activePlayerArchetype = EntityManager.CreateArchetype(           
+          typeof(Player),
+          typeof(ActivePlayer)
+        );            
+    }      
 
     protected override void OnUpdate() {
-      return;
-      var game = GetSingleton<Game>();
-      if (game.action == Game.Actions.Start) {
-        Start(game);
-      }
+      Entity activeEntity = new Entity(); Player activePlayer = new Player();
+      Entities.WithAll<Player, ActivePlayer>().
+        ForEach((Entity e, ref Player p)=>{
+          activeEntity = e;
+          activePlayer = p;
+          return;
+      });      
+      
+      if(activePlayer.action == Player.Actions.Nothing) return;
     }
   }
 }

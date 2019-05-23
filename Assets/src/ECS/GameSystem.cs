@@ -4,7 +4,6 @@ using UnityEngine;
 using Unity.Jobs;
 using Unity.Collections;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using OurECS;
@@ -13,6 +12,16 @@ namespace OurECS {
     protected EntityArchetype undrawnCardArchetype;
     System.Random random;
     
+    protected struct CardEntity {
+      public Entity entity;
+      public Card card;
+    }
+
+    protected struct PlayerEntity {
+      public Entity entity;
+      public Player player;
+    }
+
     protected override void OnCreateManager(){
       RequireSingletonForUpdate<Game>();      
       random = new System.Random((int)DateTime.Now.Ticks);
@@ -45,7 +54,6 @@ namespace OurECS {
           PostUpdateCommands.SetComponent(e, new Card { Value = i, OriginalPlayer=pe});
         }
       });
-
     }
 
     private void DrawUntilUnequalMods(Game game) {
@@ -53,6 +61,7 @@ namespace OurECS {
       if(mods.Distinct().Count() == 1)
       DrawUntilUnequalMods(game);      
     }
+
     private List<int> DrawAll(Game game) {
       var mods = new List<int>();
       Entities.ForEach((Entity e, ref Player p) => {         
@@ -62,38 +71,56 @@ namespace OurECS {
       return mods;
     }
 
-    protected void Draw(Entity pe, ref Player player, Game game) {
-      var query = 
-        GetEntityQuery(
-          typeof(Card),
-          typeof(CardFacedDown)
-        );
-        var ourCards = new List<Entity>();
-        var cards = query.ToComponentDataArray<Card>(Allocator.TempJob);
-        var entities = query.ToEntityArray(Allocator.TempJob);          
-        
-        for(int i = 0; i < cards.Length; i++) {
-          if(cards[i].OriginalPlayer != pe) continue;
-          ourCards.Add(entities[i]);
-        }
+    protected void Draw(Entity pe, ref Player player, Game game) {                                  
+        var ourCards = GetDrawableCardsForPlayer(pe);
+        if(ourCards.Count == 0) return;
 
-        if(ourCards.Count != 0){
-          var cardToDraw = random.Next(0, ourCards.Count);
-          var drawnCard = ourCards[cardToDraw];
-          PostUpdateCommands.RemoveComponent<CardFacedDown>(drawnCard);
-          player.cardCount++;
-          player.cardSum += cards[cardToDraw].Value;
-          player.mod = player.cardSum % game.mod;
-        }          
-        cards.Dispose();
-        entities.Dispose();
-        
+        var cardToDraw = random.Next(0, ourCards.Count);
+        var drawnCard = ourCards[cardToDraw];
+        player.cardCount++;
+        player.cardSum += drawnCard.card.Value;
+        player.mod = player.cardSum % game.mod;        
+        PostUpdateCommands.RemoveComponent<CardFacedDown>(drawnCard.entity);
     } 
 
-    protected void Start(Game game) {     
-      CreatePlayers(game);
+    protected List<CardEntity> GetDrawableCardsForPlayer(Entity pe) {
+      var ourCards = new List<CardEntity>();
+
+      Entities.WithAll<Card, CardFacedDown>().
+        ForEach((Entity e, ref Card c)=>{
+          if(c.OriginalPlayer != pe) return;
+          ourCards.Add(new CardEntity{entity=e, card=c});
+      });
+
+      return ourCards;
     }
-    
+
+    protected void DoActivePlayerAction(Game game) {
+        var pe = findActivePlayer();        
+        switch(pe.player.action) {
+          case Player.Actions.Nothing:
+          break;
+          case Player.Actions.Draw:
+          Draw(pe.entity, ref pe.player, game);          
+          break;
+        }
+
+        pe.player.action = Player.Actions.Nothing;
+        // setNextPlayer()
+    }
+
+    protected PlayerEntity findActivePlayer() {
+      var pe = new PlayerEntity();
+      Entities.WithAll<Player, ActivePlayer>().
+        ForEach((Entity e, ref Player p)=>{
+          pe.entity = e;
+          pe.player = p;
+          return;
+      });        
+
+      return pe;      
+    }
+
     protected void FindStartingPlayer(Game game) {
       var maxMod = -1;
       Entity worstPlayer = new Entity();
@@ -115,29 +142,31 @@ namespace OurECS {
           return;
         
         case Game.Actions.Start:
-          Start(game);
+          CreatePlayers(game);
           game.action = Game.Actions.Deal;
-          SetSingleton(game);
           break;
         
         case Game.Actions.Deal:
           DealCards(game);
           game.action = Game.Actions.DrawUntilUnequalMods;
-          SetSingleton(game);
           break;
           
         case Game.Actions.DrawUntilUnequalMods:
           DrawUntilUnequalMods(game);
           game.action = Game.Actions.FindStartingPlayer;
-          SetSingleton(game);
           break;
         
         case Game.Actions.FindStartingPlayer:
           FindStartingPlayer(game);
-          game.action = Game.Actions.Nothing;
-          SetSingleton(game);
+          game.action = Game.Actions.Round;
           break;
+
+        case Game.Actions.Round:
+          DoActivePlayerAction(game);
+          break;                
       }
+
+      SetSingleton(game);
     }
   }
 }
