@@ -25,16 +25,12 @@ namespace OurECS {
         );            
     }      
 
-    protected override void OnUpdate() {
-      Entity activeEntity = new Entity(); Player activePlayer = new Player();
+    protected override void OnUpdate() {      
       Entities.WithAll<Player, ActivePlayer>().
-        ForEach((Entity e, ref Player p)=>{
-          activeEntity = e;
-          activePlayer = p;
-          return;
+        ForEach((Entity e, ref Player p)=>{          
+          Debug.Log("Forcing Active Player to Draw"); 
+          p.action = Player.Actions.Draw;          
       });      
-      
-      if(activePlayer.action == Player.Actions.Nothing) return;
     }
   }
 }
