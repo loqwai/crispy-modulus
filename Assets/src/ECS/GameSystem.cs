@@ -105,23 +105,23 @@ namespace OurECS {
             SetNextActivePlayer(entity, game);
             break;
         }
-        
+
         player.action = Player.Actions.Nothing;
         PostUpdateCommands.RemoveComponent<ActivePlayer>(entity);
-        PostUpdateCommands.AddComponent<PlayerTurnEnded>(entity, new PlayerTurnEnded());        
+        PostUpdateCommands.AddComponent<PlayerTurnEnded>(entity, new PlayerTurnEnded());
 
       });
 
-      
+
       // setNextPlayer()
     }
 
     protected void SetNextActivePlayer(Entity pe, Game game) {
       Entities.WithAll<Player>().WithNone<ActivePlayer, PlayerTurnEnded>().
         ForEach((Entity e, ref Player p) => {
-            if(e != pe) {
-              PostUpdateCommands.AddComponent<ActivePlayer>(e, new ActivePlayer());
-            }
+          if (e != pe) {
+            PostUpdateCommands.AddComponent<ActivePlayer>(e, new ActivePlayer());
+          }
         });
     }
 
